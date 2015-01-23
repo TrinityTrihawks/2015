@@ -36,7 +36,7 @@ public class Robot extends SampleRobot {
 	
 	Talon frontLeft = new Talon(0);
 	Talon backLeft = new Talon(1);
-	Talon backRight = new Talon(2);
+	Talon backRight = new Talon(2);			// I changed this back to port 2.
 	Talon frontRight = new Talon(3);
 	
 	Talon elevator = new Talon(4);

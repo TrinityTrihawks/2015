@@ -25,55 +25,48 @@ import edu.wpi.first.wpilibj.Timer;
  * this system. Use IterativeRobot or Command-Based instead if you're new.
  */
 public class Robot extends SampleRobot {
-    RobotDrive myRobot;
-    Joystick stick;
-
+   
 	// Objects defined for drive train.
-	Joystick LeftStick = new Joystick(0);
-	Joystick RightStick = new Joystick(1);
-	// Joystick ThirdStick = new Joystick(2);
+	Joystick leftStick = new Joystick(0);
+	Joystick rightStick = new Joystick(1);
 	
-	Talon LeftFront = new Talon(0);
-	Talon RightFront = new Talon(1);
-	Talon LeftBack = new Talon(2);
-	Talon RightBack = new Talon(3);
+	Talon frontLeft = new Talon(0);
+	Talon backLeft = new Talon(1);
+	Talon backRight = new Talon(4);
+	Talon frontRight = new Talon(3);
 	
-	double tankLeft;
-	double tankRight;
+	double tank;
+	double tank2;
 	double strafe;
 	
-	// Objects defined for rack and pinion.
-	Talon RackPinion = new Talon(4);
 	
-	// Objects defined for elevator.
-	Talon Elevator = new Talon(5);
-
-	
-    public Robot() {
-        myRobot = new RobotDrive(0, 1);
-        myRobot.setExpiration(0.1);
-        stick = new Joystick(0);
-    }
-
     /**
      * Drive left & right motors for 2 seconds then stop
      */
     public void autonomous() {
-        myRobot.setSafetyEnabled(false);
-        myRobot.drive(-0.5, 0.0);	// drive forwards half speed
-        Timer.delay(2.0);		//    for 2 seconds
-        myRobot.drive(0.0, 0.0);	// stop robot
+        
     }
-
+    
     /**
      * Runs the motors with arcade steering.
      */
     public void operatorControl() {
-        myRobot.setSafetyEnabled(true);
+        
         while (isOperatorControl() && isEnabled()) {
-            myRobot.arcadeDrive(stick); // drive with arcade style (use right stick)
-            Timer.delay(0.005);		// wait for a motor update time
+            drivingMethod();
         }
+    }
+    
+    public void drivingMethod(){
+    	
+    	tank = leftStick.getY();
+    	tank2 = rightStick.getY();
+    	strafe = rightStick.getX();
+    	
+    	frontLeft.set(-tank + strafe);
+    	backLeft.set(-tank - strafe);
+    	backRight.set(tank2 - strafe);
+    	frontRight.set(tank2 + strafe);
     }
 
     /**

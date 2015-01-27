@@ -1,134 +1,158 @@
 package org.usfirst.frc.team4215.robot;
 
-import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.Joystick;
+
 import edu.wpi.first.wpilibj.SampleRobot;
+import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Timer;
 
 
-public class Robot extends SampleRobot {
+/**
+ * This is a demo program showing the use of the RobotDrive class.
+ * The SampleRobot class is the base of a robot application that will automatically call your
+ * Autonomous and OperatorControl methods at the right time as controlled by the switches on
+ * the driver station or the field controls.
+ *
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to each mode, as described in the SampleRobot
+ * documentation. If you change the name of this class or the package after
+ * creating this project, you must also update the manifest file in the resource
+ * directory.
+ *
+ * WARNING: While it may look like a good choice to use for your code if you're inexperienced,
+ * don't. Unless you know what you are doing, complex code will be much more difficult under
+ * this system. Use IterativeRobot or Command-Based instead if you're new.
+ */
+public class Robot extends SampleRobot { 
 	public static void main(String[] args) {
 		
 	}
+   
+	DigitalInput limitSwitch; 
 	
 	// Objects defined for drive train.
-	Joystick LeftStick = new Joystick(0);
-	Joystick RightStick = new Joystick(1);
+	Joystick leftStick = new Joystick(0);
+	Joystick rightStick = new Joystick(1);
+	Joystick thirdStick = new Joystick(2);
 	
-	Talon LeftFront = new Talon(0);
-	Talon RightFront = new Talon(1);
-	Talon LeftBack = new Talon(2);
-	Talon RightBack = new Talon(3);
+	Talon frontLeft = new Talon(0);
+	Talon backLeft = new Talon(1);
+	Talon backRight = new Talon(2);
+	Talon frontRight = new Talon(3);
+	
+	Talon elevator = new Talon(4);
+	Talon rackPinion = new Talon(5);
+	outerLimitSwitch = new DigitalInput(1);
+	innerLimitSwitch = new DigitalInput(2);
 	
 	double tankLeft;
 	double tankRight;
 	double strafe;
 	
-	// Objects defined for rack and pinion.
-	Talon RackPinion = new Talon(4);
+	private double MAXINPUT = .75;
+    private double MININPUT = .15;
 	
-	// Objects defined for elevator.
-	Talon Elevator = new Talon(5);
 	
     /**
-     * This function is run when the robot is first started up and should be
-     * used for any initialization code.
+     * Drive left & right motors for 2 seconds then stop
      */
-    public void robotInit() {
-    	
+    public void autonomous() {
+        
     }
     
-
-    public void DriveMethod() {
-    	
-    	// Tank Drive for teleop...
-    	
-    	
-
-    		// LeftStick's y-axis controls the left half of the robot.
-    		if (LeftStick.getY()>.8) {
-    			tankLeft = 1;
-    		}
-    		else if ((LeftStick.getY()<.1) && (LeftStick.getY()>-.1)) {
-    			tankLeft = 0;
-    		}
-    		else if (LeftStick.getY()<-.8) {
-    			tankLeft = -1;
-    		}
-    		else {
-    			tankLeft = LeftStick.getY();
-    		}
-    		
-
-    		// RightStick's y-axis controls the right half of the robot.
-    		if (RightStick.getY()>.8) {
-    			tankRight = 1;
-    		}
-    		else if ((RightStick.getY()<.1) && (RightStick.getY()>-.1)) {
-    			tankRight = 0;
-    		}
-    		else if (RightStick.getY()<-.8) {
-    			tankRight = -1;
-    		}
-    		else {
-    			tankRight = RightStick.getY();
-    		}
-
-
-    		// 
-    		if ((LeftStick.getX()<-.1) || (LeftStick.getX()>.1)) {
-    			strafe = .5*LeftStick.getX();
-    		}
-    		if ((RightStick.getX()<-.2) || (RightStick.getX()>.2)){
-    			strafe = RightStick.getX();
-    		}
-    		
-    		
-    		
-    		RightFront.set(tankRight + strafe);
-    		RightBack.set(tankRight - strafe);
-    		
-    		LeftFront.set(tankLeft - strafe);
-    		LeftBack.set(tankLeft + strafe);
+    /**
+     * Runs the motors with arcade steering.
+     */
+    public void operatorControl() {
+        
+        while (isOperatorControl() && isEnabled()) {
+            drivingMethod();
+            rackMethod();
+        }
+    }
+    
+    public void drivingMethod(){
+    	tankLeft = leftStick.getY();
+    	tankRight = rightStick.getY();
+    	if (rightStick.getX() >= MININPUT) {			// This line gives the right joystick strafing priority if both joysticks are moved in the x-direction.
+    		strafe = rightStick.getX();
     	}
-
-
-    
-    /**
-     * This function is run once each time the robot enters autonomous mode
-     */
-    public void autonomousInit() {
-    	
-    }
-
-    /**
-     * This function is called periodically during autonomous
-     */
-    public void autonomousPeriodic() {
-    	
-    }
-    
-    /**
-     * This function is called once each time the robot enters tele-operated mode
-     */
-    public void teleopInit(){
-    	
-    }
-
-    /**
-     * This function is called periodically during operator control
-     */
-    public void teleopPeriodic() {
-    	
-    	while (isOperatorControl() && isEnabled()) { 
-    		
+    	else {
+    		strafe = .5*leftStick.getX();
     	}
-    
+    	
+    	
+    	// This moves the wheels on the left side of the robot.
+    	//tankLeft = Math.floor(tankLeft*20)/20;
+    	if (tankLeft <= Math.abs(MININPUT)) {
+    		tankLeft = 0;
+    	}
+    	else if (tankLeft >= MAXINPUT) {
+    		tankLeft = MAXINPUT;
+    	}
+    	else if (tankLeft <= -MAXINPUT) {
+    		tankLeft = -MAXINPUT;
+    	}
+    	
+    	// This moves the wheels on the right side of the robot.
+    	//tankRight = Math.floor(tankRight*20)/20;
+    	if (tankRight <= Math.abs(MININPUT)) {
+    		tankRight = MININPUT;
+    	}
+    	else if (tankRight >= MAXINPUT) {
+    		tankRight = MAXINPUT;
+    	}
+    	else if (tankRight <= -MAXINPUT) {
+    		tankRight = -MAXINPUT;
+    	}
+    	
+    	// This controls the strafing.
+    	if (strafe <= Math.abs(MININPUT)) {
+    		strafe = 0;
+    	}
+    	else if (strafe >= MAXINPUT) {
+    		strafe = MAXINPUT;
+    	}
+    	else if (strafe <= -MAXINPUT) {
+    		strafe = -MAXINPUT;
+    	}
+    	
+    	
+    	frontLeft.set(-tankLeft + strafe);
+    	backLeft.set(-tankLeft - strafe);
+    	backRight.set(tankRight - strafe);
+    	frontRight.set(tankRight + strafe);
     }
-    /**
-     * This function is called periodically during test mode
-     */
-    public void testPeriodic() {
+    
+    public void rackMethod(){ 	// Lauren&Margaret&Emma wrote this part
+    	double arms;
+    	private double maxInputArms = 0.75;
+    	private double minInputArms = 0.15;
+    	    	
+    	arms = thirdstick.getX();
+    	
+    	if (arms >= maxInputArms){
+    		arms = maxInputArms;
+    	}
+    	else if (arms <= Math.abs(minInputArms)){
+    		arms = minInputArms;
+    	}
+    	
+    	if (outerLimitSwitch.get() == 1 && arms > 0){
+    		arms = 0;
+    	}
+    	else if (innerLimitSwitch.get() == 1 && arms > 0){
+    		arms = 0;
+    	}
+    	
+    	rackPinion.set(arms);
     	
     }
-    
+
+    /**
+     * Runs during test mode
+     */
+    public void test() {
+    }
 }

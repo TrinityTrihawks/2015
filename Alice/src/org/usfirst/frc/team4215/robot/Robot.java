@@ -2,6 +2,7 @@
 package org.usfirst.frc.team4215.robot;
 
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Joystick;
@@ -33,14 +34,20 @@ public class Robot extends SampleRobot {
 	// Objects defined for drive train.
 	Joystick leftStick = new Joystick(0);
 	Joystick rightStick = new Joystick(1);
+	Joystick thirdStick = new Joystick(2);
 	
+	// Talon def
 	Talon frontLeft = new Talon(0);
 	Talon backLeft = new Talon(1);
 	Talon backRight = new Talon(2);			// I changed this back to port 2.
 	Talon frontRight = new Talon(3);
 	
+
 	Talon elevator = new Talon(4);
 	Talon rackPinion = new Talon(5);
+	
+	DigitalInput outerLimitSwitch = new DigitalInput(1);
+	DigitalInput innerLimitSwitch = new DigitalInput(2);
 	
 	double tankLeft;
 	double tankRight;
@@ -48,12 +55,6 @@ public class Robot extends SampleRobot {
 	
 	private double MAXINPUT = .75;
     private double MININPUT = .15;
-
-    // Objects defined for rack and pinion.
-	Talon RackPinion = new Talon(4);
-	
-	// Objects defined for elevator.
-	Talon Elevator = new Talon(5);
 	
     /**
      * Drive left & right motors for 2 seconds then stop
@@ -145,6 +146,30 @@ public class Robot extends SampleRobot {
     	}
     }
 
+    public void rackMethod(){ 	// Lauren&Margaret&Emma wrote this part
+    	double arms;
+    	final double maxInputArms = 0.75;
+    	final double minInputArms = 0.15;
+    	    	
+    	arms = thirdStick.getX();
+    	
+    	if (arms >= maxInputArms){
+    		arms = maxInputArms;
+    	}
+    	else if (arms <= Math.abs(minInputArms)){
+    		arms = minInputArms;
+    	}
+    	
+    	if (outerLimitSwitch.get() && arms > 0){
+    		arms = 0;
+    	}
+    	else if (innerLimitSwitch.get() && arms > 0){
+    		arms = 0;
+    	}
+    	
+    	rackPinion.set(arms);    	
+    }
+    
     /**
      * Runs during test mode
      */

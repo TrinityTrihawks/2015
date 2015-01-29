@@ -29,7 +29,7 @@ public class Robot extends SampleRobot {
 	public static void main(String[] args) {
 		
 	}
-   
+	   
 	// Objects defined for drive train.
 	Joystick leftStick = new Joystick(0);
 	Joystick rightStick = new Joystick(1);
@@ -48,7 +48,12 @@ public class Robot extends SampleRobot {
 	
 	private double MAXINPUT = .75;
     private double MININPUT = .15;
+
+    // Objects defined for rack and pinion.
+	Talon RackPinion = new Talon(4);
 	
+	// Objects defined for elevator.
+	Talon Elevator = new Talon(5);
 	
     /**
      * Drive left & right motors for 2 seconds then stop
@@ -118,6 +123,26 @@ public class Robot extends SampleRobot {
     	backLeft.set(-tankLeft - strafe);
     	backRight.set(tankRight - strafe);
     	frontRight.set(tankRight + strafe);
+    }
+
+    public void Elevator() {
+    	
+    	Joystick LeftStick = new Joystick(0);
+    	Talon ElevatorMotor = new Talon(5);
+    	double UpDown;
+    	
+    	if (LeftStick.getRawButton(1)) {
+			UpDown = 1;
+			ElevatorMotor.set(UpDown);
+    	}    
+    	else if (LeftStick.getRawButton(2)) {
+    		UpDown = -1;
+    		ElevatorMotor.set(UpDown);
+	    }
+    	else {
+    		UpDown = 0;
+    		ElevatorMotor.set(UpDown);
+    	}
     }
 
     /**

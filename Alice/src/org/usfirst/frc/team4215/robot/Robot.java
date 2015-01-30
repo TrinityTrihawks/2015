@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 
-
 /**
  * This is a demo program showing the use of the RobotDrive class.
  * The SampleRobot class is the base of a robot application that will automatically call your
@@ -25,99 +24,56 @@ import edu.wpi.first.wpilibj.Timer;
  * don't. Unless you know what you are doing, complex code will be much more difficult under
  * this system. Use IterativeRobot or Command-Based instead if you're new.
  */
-public class Robot extends SampleRobot { 
-	public static void main(String[] args) {
-		
-	}
-   
+public class Robot extends SampleRobot {
+    RobotDrive myRobot;
+    Joystick stick;
+
 	// Objects defined for drive train.
-	Joystick leftStick = new Joystick(0);
-	Joystick rightStick = new Joystick(1);
+	Joystick LeftStick = new Joystick(0);
+	Joystick RightStick = new Joystick(1);
+	// Joystick ThirdStick = new Joystick(2);
 	
-	Talon frontLeft = new Talon(0);
-	Talon backLeft = new Talon(1);
-	Talon backRight = new Talon(2);			// I changed this back to port 2.
-	Talon frontRight = new Talon(3);
-	
-	Talon elevator = new Talon(4);
-	Talon rackPinion = new Talon(5);
+	Talon LeftFront = new Talon(0);
+	Talon RightFront = new Talon(1);
+	Talon LeftBack = new Talon(2);
+	Talon RightBack = new Talon(3);
 	
 	double tankLeft;
 	double tankRight;
 	double strafe;
 	
-	private double MAXINPUT = .75;
-    private double MININPUT = .15;
+	// Objects defined for rack and pinion.
+	Talon RackPinion = new Talon(4);
 	
+	// Objects defined for elevator.
+	Talon Elevator = new Talon(5);
+
 	
+    public Robot() {
+        myRobot = new RobotDrive(0, 1);
+        myRobot.setExpiration(0.1);
+        stick = new Joystick(0);
+    }
+
     /**
      * Drive left & right motors for 2 seconds then stop
      */
     public void autonomous() {
-        
+        myRobot.setSafetyEnabled(false);
+        myRobot.drive(-0.5, 0.0);	// drive forwards half speed
+        Timer.delay(2.0);		//    for 2 seconds
+        myRobot.drive(0.0, 0.0);	// stop robot
     }
-    
+
     /**
      * Runs the motors with arcade steering.
      */
     public void operatorControl() {
-        
+        myRobot.setSafetyEnabled(true);
         while (isOperatorControl() && isEnabled()) {
-            drivingMethod();
+            myRobot.arcadeDrive(stick); // drive with arcade style (use right stick)
+            Timer.delay(0.005);		// wait for a motor update time
         }
-    }
-    
-    public void drivingMethod(){
-    	tankLeft = leftStick.getY();
-    	tankRight = rightStick.getY();
-    	if (rightStick.getX() >= MININPUT) {			// This line gives the right joystick strafing priority if both joysticks are moved in the x-direction.
-    		strafe = rightStick.getX();
-    	}
-    	else {
-    		strafe = .5*leftStick.getX();
-    	}
-    	
-    	
-    	// This moves the wheels on the left side of the robot.
-    	//tankLeft = Math.floor(tankLeft*20)/20;
-    	if (tankLeft <= Math.abs(MININPUT)) {
-    		tankLeft = 0;
-    	}
-    	else if (tankLeft >= MAXINPUT) {
-    		tankLeft = MAXINPUT;
-    	}
-    	else if (tankLeft <= -MAXINPUT) {
-    		tankLeft = -MAXINPUT;
-    	}
-    	
-    	// This moves the wheels on the right side of the robot.
-    	//tankRight = Math.floor(tankRight*20)/20;
-    	if (tankRight <= Math.abs(MININPUT)) {
-    		tankRight = MININPUT;
-    	}
-    	else if (tankRight >= MAXINPUT) {
-    		tankRight = MAXINPUT;
-    	}
-    	else if (tankRight <= -MAXINPUT) {
-    		tankRight = -MAXINPUT;
-    	}
-    	
-    	// This controls the strafing.
-    	if (strafe <= Math.abs(MININPUT)) {
-    		strafe = 0;
-    	}
-    	else if (strafe >= MAXINPUT) {
-    		strafe = MAXINPUT;
-    	}
-    	else if (strafe <= -MAXINPUT) {
-    		strafe = -MAXINPUT;
-    	}
-    	
-    	
-    	frontLeft.set(-tankLeft + strafe);
-    	backLeft.set(-tankLeft - strafe);
-    	backRight.set(tankRight - strafe);
-    	frontRight.set(tankRight + strafe);
     }
 
     /**

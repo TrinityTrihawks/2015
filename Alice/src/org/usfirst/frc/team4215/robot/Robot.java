@@ -1,4 +1,3 @@
-
 package org.usfirst.frc.team4215.robot;
 
 
@@ -8,6 +7,7 @@ import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Solenoid;
 
 
 /**
@@ -35,6 +35,7 @@ public class Robot extends SampleRobot {
 	Joystick leftStick = new Joystick(0);
 	Joystick rightStick = new Joystick(1);
 	Joystick thirdStick = new Joystick(2);
+	Joystick elevationStick = new Joystick(2);
 	
 	// Talon def
 	Talon frontLeft = new Talon(0);
@@ -48,6 +49,10 @@ public class Robot extends SampleRobot {
 	
 	DigitalInput outerLimitSwitch = new DigitalInput(1);
 	DigitalInput innerLimitSwitch = new DigitalInput(2);
+	DigitalInput upperElevatorLimitSwitch = new DigitalInput(1);
+	DigitalInput lowerElevatorLimitSwitch = new DigitalInput(2);
+	
+	Solenoid solenoid = new Solenoid(1);
 	
 	double tankLeft;
 	double tankRight;
@@ -55,6 +60,7 @@ public class Robot extends SampleRobot {
 	
 	private double MAXINPUT = .75;
     private double MININPUT = .15;
+	boolean unlocked = true;
 	
     /**
      * Drive left & right motors for 2 seconds then stop
@@ -127,24 +133,54 @@ public class Robot extends SampleRobot {
     }
 
     public void Elevator() {
-    	
-    	Joystick LeftStick = new Joystick(0);
-    	Talon ElevatorMotor = new Talon(5);
-    	double UpDown;
-    	
-    	if (LeftStick.getRawButton(1)) {
-			UpDown = 1;
-			ElevatorMotor.set(UpDown);
-    	}    
-    	else if (LeftStick.getRawButton(2)) {
-    		UpDown = -1;
-    		ElevatorMotor.set(UpDown);
-	    }
-    	else {
-    		UpDown = 0;
-    		ElevatorMotor.set(UpDown);
+    	if (thirdStick.getRawButton(0) && unlocked) {
+    		unlocked = false;
     	}
-    }
+    	if (thirdStick.getRawButton(0) && unlocked==false);
+    		unlocked = true;
+    	if (unlocked == false) {
+    		solenoid.set(true);
+    	}
+    	else {
+    		solenoid.set(false);
+    	}
+ // solenoid code ends here and elevator code starts here
+    	
+    	double elevation;
+    	final double maxInputElevation = 0.75;
+    	final double minInputElevation = 0.15;
+    	final double maxNegInputElevation=-.75;
+    	final double minNegInputElevation=-.15;
+    	    	
+    	elevation = thirdStick.getY();
+    	
+    	if (elevation >= maxInputElevation){
+    		elevation = maxInputElevation;
+    	}
+    	else if (elevation <= Math.abs(minInputElevation)){
+    		elevation = minInputElevation;
+    	}
+    	if (elevation <= maxNegInputElevation){
+    		elevation = maxNegInputElevation;
+    	}
+    	else if (elevation >= Math.abs(minNegInputElevation)){
+    		elevation = minNegInputElevation;
+    	} 
+    	
+    	if (outerLimitSwitch.get() && elevation > 0){
+    		elevation = 0;
+    	}
+    	else if (innerLimitSwitch.get() && elevation > 0){
+    		elevation = 0;
+    	}
+    	if (unlocked==false) {
+    		elevation=0;
+    	}
+    	elevator.set(elevation);  
+    	
+    }    
+    
+
 
     public void rackMethod(){ 	// Lauren&Margaret&Emma wrote this part
     	double arms;

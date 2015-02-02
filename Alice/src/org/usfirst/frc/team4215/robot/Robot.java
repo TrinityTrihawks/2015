@@ -160,11 +160,17 @@ public class Robot extends SampleRobot {
     	else if (innerLimitSwitch.get() && elevation > 0){
     		elevation = 0;
     	}
+    	if (elevation>0) {
+    		timerR.start();
+    	}
     	if (elevation==0) {
     		solenoid.set(true);
     	}
     	else {
     		solenoid.set(false);
+    		timerR.stop();
+    		timerR.get();
+    		
     	}
     	elevator.set(elevation);  
     	

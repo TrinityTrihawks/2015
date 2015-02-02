@@ -42,7 +42,7 @@ public class Robot extends SampleRobot {
 	Talon backLeft = new Talon(1);
 	Talon backRight = new Talon(2);			// I changed this back to port 2.
 	Talon frontRight = new Talon(3);
-	
+	Timer timerR= new Timer();
 
 	Talon elevator = new Talon(4);
 	Talon rackPinion = new Talon(5);
@@ -60,7 +60,6 @@ public class Robot extends SampleRobot {
 	
 	private double MAXINPUT = .75;
     private double MININPUT = .15;
-	boolean unlocked = true;
 	
     /**
      * Drive left & right motors for 2 seconds then stop
@@ -133,38 +132,26 @@ public class Robot extends SampleRobot {
     }
 
     public void Elevator() {
-    	if (thirdStick.getRawButton(0) && unlocked) {
-    		unlocked = false;
-    	}
-    	if (thirdStick.getRawButton(0) && unlocked==false);
-    		unlocked = true;
-    	if (unlocked == false) {
-    		solenoid.set(true);
-    	}
-    	else {
-    		solenoid.set(false);
-    	}
- // solenoid code ends here and elevator code starts here
     	
     	double elevation;
-    	final double maxInputElevation = 0.75;
-    	final double minInputElevation = 0.15;
-    	final double maxNegInputElevation=-.75;
-    	final double minNegInputElevation=-.15;
+    	final double maxInputElevation = -0.75;
+    	final double minInputElevation = -0.15;
+
+    	final double cautionInput=-.05;
     	    	
     	elevation = thirdStick.getY();
     	
-    	if (elevation >= maxInputElevation){
+    	if (elevation >= Math.abs(maxInputElevation)){
+    		elevation = Math.abs(maxInputElevation);
+    	}
+    	else if (elevation <= Math.abs(minInputElevation) && elevation <= Math.abs(cautionInput)){
+    		elevation = Math.abs(minInputElevation);
+    	}
+    	if (elevation <= maxInputElevation){
     		elevation = maxInputElevation;
     	}
-    	else if (elevation <= Math.abs(minInputElevation)){
+    	else if (elevation >= (minInputElevation) && elevation >= cautionInput) {
     		elevation = minInputElevation;
-    	}
-    	if (elevation <= maxNegInputElevation){
-    		elevation = maxNegInputElevation;
-    	}
-    	else if (elevation >= Math.abs(minNegInputElevation)){
-    		elevation = minNegInputElevation;
     	} 
     	
     	if (outerLimitSwitch.get() && elevation > 0){
@@ -173,8 +160,11 @@ public class Robot extends SampleRobot {
     	else if (innerLimitSwitch.get() && elevation > 0){
     		elevation = 0;
     	}
-    	if (unlocked==false) {
-    		elevation=0;
+    	if (elevation==0) {
+    		solenoid.set(true);
+    	}
+    	else {
+    		solenoid.set(false);
     	}
     	elevator.set(elevation);  
     	

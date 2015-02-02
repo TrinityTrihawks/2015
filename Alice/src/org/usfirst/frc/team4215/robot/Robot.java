@@ -37,6 +37,7 @@ public class Robot extends SampleRobot {
 	Joystick thirdStick = new Joystick(2);
 	Joystick elevationStick = new Joystick(2);
 	
+	
 	// Talon def
 	Talon frontLeft = new Talon(0);
 	Talon backLeft = new Talon(1);
@@ -61,7 +62,12 @@ public class Robot extends SampleRobot {
 	private double MAXINPUT = .75;
     private double MININPUT = .15;
 	boolean unlocked = true;
-	
+	private double underdrive = .5;
+    private int LStickunderdrive = 2;
+    private int RStickunderdrive = 2;
+ // underdrive it to be used as a way to halve motor power when button 2 on driver stick is pressed
+    
+    
     /**
      * Drive left & right motors for 2 seconds then stop
      */
@@ -82,6 +88,8 @@ public class Robot extends SampleRobot {
     public void drivingMethod(){
     	tankLeft = leftStick.getY();
     	tankRight = rightStick.getY();
+    	boolean buttonpressed=(leftStick.getRawButton(LStickunderdrive) || rightStick.getRawButton(RStickunderdrive)); 
+    	// This gets button 2 for both joysticks
     	if (rightStick.getX() >= MININPUT) {			// This line gives the right joystick strafing priority if both joysticks are moved in the x-direction.
     		strafe = rightStick.getX();
     	}
@@ -125,6 +133,12 @@ public class Robot extends SampleRobot {
     		strafe = -MAXINPUT;
     	}
     	
+    	// In the case that button 2 on the driverstation is pressed, the if statement will limit power output to half.
+    	if (buttonpressed){
+    		tankLeft *= underdrive;
+    		tankRight *= underdrive;
+    		strafe *= underdrive;
+    	}
     	
     	frontLeft.set(-tankLeft + strafe);
     	backLeft.set(-tankLeft - strafe);

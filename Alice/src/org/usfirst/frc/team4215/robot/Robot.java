@@ -2,11 +2,14 @@
 package org.usfirst.frc.team4215.robot;
 
 
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 /**
  * This is a demo program showing the use of the RobotDrive class.
@@ -39,12 +42,24 @@ public class Robot extends SampleRobot {
 	double tank2;
 	double strafe;
 	
+	PowerDistributionPanel pdp = new PowerDistributionPanel();
 	
     /**
      * Drive left & right motors for 2 seconds then stop
      */
     public void autonomous() {
         
+    	
+        	frontLeft.setSafetyEnabled(false);
+        	backLeft.setSafetyEnabled(false);
+        	backRight.setSafetyEnabled(false);
+        	frontRight.setSafetyEnabled(false);
+        	
+        	strafeLeft();
+        	Timer.delay(1.6);
+        	stop();
+        
+    	
     }
     
     /**
@@ -54,6 +69,13 @@ public class Robot extends SampleRobot {
         
         while (isOperatorControl() && isEnabled()) {
             drivingMethod();
+            SmartDashboard.putNumber("Left Y value",leftStick.getY());
+            SmartDashboard.putNumber("Right Y value",rightStick.getY());
+            SmartDashboard.putNumber("Strafe value",rightStick.getX());
+            SmartDashboard.putNumber("Front Right motor Current",pdp.getCurrent(0));
+            SmartDashboard.putNumber("Front Left motor Current",pdp.getCurrent(3));
+            SmartDashboard.putNumber("Back Left Motor current", pdp.getCurrent(12));
+            SmartDashboard.putNumber("Back Right Motor current", pdp.getCurrent(15));
         }
     }
     
@@ -68,7 +90,47 @@ public class Robot extends SampleRobot {
     	backRight.set(tank2 - strafe);
     	frontRight.set(tank2 + strafe);
     }
+    
+    public void strafeRight(){
+    	
+    	frontLeft.set(.5);
+    	backLeft.set(-.5);
+    	backRight.set(-.5);
+    	frontRight.set(.5);
+    	
+    }
+    
+    public void strafeLeft(){
+    	backLeft.set(.75);
+    	backRight.set(.75);
+    	frontLeft.set(-.85);
+    	frontRight.set(-.85);
 
+    }
+    
+    public void forward(){
+    	frontLeft.set(.5); 
+    	frontRight.set(.5);
+    	backLeft.set(.5);
+    	backRight.set(.5);
+
+
+    }
+    
+    public void backward(){
+    	frontLeft.set(-.5);
+    	backLeft.set(-.5);
+    	backRight.set(-.5);
+    	frontRight.set(-.5);
+    }
+
+    public void stop(){
+    	frontLeft.set(0);
+    	backLeft.set(0);
+    	backRight.set(0);
+    	frontRight.set(0);
+    }
+    
     /**
      * Runs during test mode
      */

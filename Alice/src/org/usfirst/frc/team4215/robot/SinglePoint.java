@@ -24,7 +24,7 @@ public class SinglePoint {
 	 * from the Single Point laser sensor.  
 	 */
 	
-	public double Scan(){
+	public double scan(){
 		double volt;
 		double distance = offset;
 		

@@ -49,8 +49,8 @@ public class Robot extends SampleRobot {
 	
 	DigitalInput outerLimitSwitch = new DigitalInput(1);
 	DigitalInput innerLimitSwitch = new DigitalInput(2);
-	DigitalInput upperElevatorLimitSwitch = new DigitalInput(1);
-	DigitalInput lowerElevatorLimitSwitch = new DigitalInput(2);
+	DigitalInput upperElevatorLimitSwitch = new DigitalInput(3);
+	DigitalInput lowerElevatorLimitSwitch = new DigitalInput(4);
 	
 	Solenoid solenoid = new Solenoid(1);
 	
@@ -58,9 +58,11 @@ public class Robot extends SampleRobot {
 	double tankRight;
 	double strafe;
 	
-	private double MAXINPUT = .75;
-    private double MININPUT = .15;
-	
+	private final double MAXINPUT = 1.0;
+    private final double MININPUT = .0;
+	private final double maxInputElevation = -0.75;
+	private final double minInputElevation = -0.15;
+
     /**
      * Drive left & right motors for 2 seconds then stop
      */
@@ -134,8 +136,6 @@ public class Robot extends SampleRobot {
     public void Elevator() {
     	
     	double elevation;
-    	final double maxInputElevation = -0.75;
-    	final double minInputElevation = -0.15;
 
     	final double cautionInput=-.05;
     	    	

@@ -13,7 +13,7 @@ public class SinglePoint {
 	int unitsoflength;
 	AnalogInput lasr = new AnalogInput(channel);
 	
-	public singlePoint( int setChannel, double setOffset, int setUnitsoflength) {
+	public SinglePoint( int setChannel, double setOffset, int setUnitsoflength) {
 		channel = setChannel;
 		offset = setOffset;
 		unitsoflength = setUnitsoflength;

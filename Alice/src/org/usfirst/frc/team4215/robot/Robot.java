@@ -1,13 +1,14 @@
 package org.usfirst.frc.team4215.robot;
 
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SampleRobot;
-import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 /**
@@ -65,8 +66,18 @@ public class Robot extends SampleRobot {
     /**
      * Drive left & right motors for 2 seconds then stop
      */
+	PowerDistributionPanel pdp = new PowerDistributionPanel();
+	AnalogInput test = new AnalogInput(0);
     public void autonomous() {
-        
+        while (!isOperatorControl() && isEnabled()) {
+        	AutonomousStrafe();
+        	SmartDashboard.putNumber("Current 1",pdp.getCurrent(0));
+        	SmartDashboard.putNumber("Current 2",pdp.getCurrent(1));
+        	SmartDashboard.putNumber("Current 3",pdp.getCurrent(2));
+        	SmartDashboard.putNumber("Current 4",pdp.getCurrent(3));
+        	SmartDashboard.putData("Single Point",test);
+        }
+        	
     }
     
     /**
@@ -204,6 +215,10 @@ public class Robot extends SampleRobot {
     	}
     	
     	rackPinion.set(arms);    	
+    }
+    
+    public void AutonomousStrafe(){
+    	
     }
     
     /**

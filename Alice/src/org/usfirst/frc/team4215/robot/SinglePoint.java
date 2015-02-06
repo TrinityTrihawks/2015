@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 
 public class SinglePoint {
 	int channel;
-	double metre = 99990;
+	double metre = 90;
 	double offset;
 	int unitsoflength;
 	AnalogInput lasr = new AnalogInput(channel);
@@ -32,15 +32,15 @@ public class SinglePoint {
 		 
 		 switch(unitsoflength){
 		 			//Metric
-		 case 1: distance += ((volt*metre)+50)*.001;
+		 case 1: distance += ((volt*metre)+50);
 		 			break;
 		 		
 		 			//(Light/Time)ic
-		 case 2: distance += (((volt*metre)+50)*.001)*3.3335696;
+		 case 2: distance += (((volt*metre)+50))*.0033335696;
 				 	break;
 				 
 				 	//Barbaric
-		 case 3: distance += (((volt*metre) + 50)*.001)*3.280839895;
+		 case 3: distance += (((volt*metre) + 50))*.0393701;
 		 		 	break;
 		 }
 		 

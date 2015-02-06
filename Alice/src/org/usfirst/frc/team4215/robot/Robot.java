@@ -43,26 +43,27 @@ public class Robot extends SampleRobot {
 	Talon backLeft = new Talon(1);
 	Talon backRight = new Talon(2);			// I changed this back to port 2.
 	Talon frontRight = new Talon(3);
-	
+	Timer timerR= new Timer();
 
 	Talon elevator = new Talon(4);
 	Talon rackPinion = new Talon(5);
 	
 	DigitalInput outerLimitSwitch = new DigitalInput(1);
 	DigitalInput innerLimitSwitch = new DigitalInput(2);
-	DigitalInput upperElevatorLimitSwitch = new DigitalInput(1);
-	DigitalInput lowerElevatorLimitSwitch = new DigitalInput(2);
+	DigitalInput upperElevatorLimitSwitch = new DigitalInput(3);
+	DigitalInput lowerElevatorLimitSwitch = new DigitalInput(4);
 	
 	Solenoid solenoid = new Solenoid(1);
+		
+	private final double maxInputDriver = 1.0;
+    private final double minInputDriver = .1;
+	private final double maxInputElevation = 0.9;
+	private final double minInputElevation = 0.1;
+	private final double maxInputRack = 0.9;
+	private final double minInputRack = 0.1;
+	private final double cautionInput=-.05;
 	
-	double tankLeft;
-	double tankRight;
-	double strafe;
-	
-	private double MAXINPUT = .75;
-    private double MININPUT = .15;
-	boolean unlocked = true;
-	
+
     /**
      * Drive left & right motors for 2 seconds then stop
      */
@@ -86,131 +87,103 @@ public class Robot extends SampleRobot {
     public void operatorControl() {
         
         while (isOperatorControl() && isEnabled()) {
+//        	SmartDashboard
             drivingMethod();
         }
     }
     
     public void drivingMethod(){
-    	tankLeft = leftStick.getY();
-    	tankRight = rightStick.getY();
-    	if (rightStick.getX() >= MININPUT) {			// This line gives the right joystick strafing priority if both joysticks are moved in the x-direction.
-    		strafe = rightStick.getX();
+    	double tankLeftDrive = leftStick.getY();
+    	double tankRightDrive = rightStick.getY();
+    	
+    	double tankLeftStrafe = leftStick.getX();
+    	double tankRightStrafe = rightStick.getX();
+
+    	double strafe = 0.0;
+
+    	tankLeftDrive = joystickInputConditioning(tankLeftDrive, cautionInput, minInputDriver, maxInputDriver);
+    	tankRightDrive = joystickInputConditioning(tankRightDrive, cautionInput, minInputDriver, maxInputDriver);
+    	
+    	tankLeftStrafe = joystickInputConditioning(tankLeftStrafe, cautionInput, minInputDriver, maxInputDriver);
+    	tankRightStrafe = joystickInputConditioning(tankRightStrafe, cautionInput, minInputDriver, maxInputDriver);
+
+    	if (tankRightStrafe >= minInputDriver) {			// This line gives the right joystick strafing priority if both joysticks are moved in the x-direction.
+    		strafe = tankRightStrafe;
     	}
     	else {
-    		strafe = .5*leftStick.getX();
-    	}
+    		strafe = .5 * tankLeftStrafe;
+    	}    	
     	
-    	
-    	// This moves the wheels on the left side of the robot.
-    	//tankLeft = Math.floor(tankLeft*20)/20;
-    	if (tankLeft <= Math.abs(MININPUT)) {
-    		tankLeft = 0;
-    	}
-    	else if (tankLeft >= MAXINPUT) {
-    		tankLeft = MAXINPUT;
-    	}
-    	else if (tankLeft <= -MAXINPUT) {
-    		tankLeft = -MAXINPUT;
-    	}
-    	
-    	// This moves the wheels on the right side of the robot.
-    	//tankRight = Math.floor(tankRight*20)/20;
-    	if (tankRight <= Math.abs(MININPUT)) {
-    		tankRight = MININPUT;
-    	}
-    	else if (tankRight >= MAXINPUT) {
-    		tankRight = MAXINPUT;
-    	}
-    	else if (tankRight <= -MAXINPUT) {
-    		tankRight = -MAXINPUT;
-    	}
-    	
-    	// This controls the strafing.
-    	if (strafe <= Math.abs(MININPUT)) {
-    		strafe = 0;
-    	}
-    	else if (strafe >= MAXINPUT) {
-    		strafe = MAXINPUT;
-    	}
-    	else if (strafe <= -MAXINPUT) {
-    		strafe = -MAXINPUT;
-    	}
-    	
-    	
-    	frontLeft.set(-tankLeft + strafe);
-    	backLeft.set(-tankLeft - strafe);
-    	backRight.set(tankRight - strafe);
-    	frontRight.set(tankRight + strafe);
+    	frontLeft.set(-tankLeftDrive + strafe);
+    	backLeft.set(-tankLeftDrive - strafe);
+    	backRight.set(tankRightDrive - strafe);
+    	frontRight.set(tankRightDrive + strafe);
     }
 
     public void Elevator() {
-    	if (thirdStick.getRawButton(0) && unlocked) {
-    		unlocked = false;
+    	
+    	double elevation;
+
+    	elevation = thirdStick.getY();
+    	
+    	elevation = joystickInputConditioning(elevation, cautionInput, minInputElevation, maxInputElevation);
+    	    	
+    	if (upperElevatorLimitSwitch.get() && elevation > 0){
+    		elevation = 0;
     	}
-    	if (thirdStick.getRawButton(0) && unlocked==false);
-    		unlocked = true;
-    	if (unlocked == false) {
+    	else if (lowerElevatorLimitSwitch.get() && elevation < 0){
+    		elevation = 0;
+    	}
+
+    	if (elevation==0) {
     		solenoid.set(true);
     	}
     	else {
     		solenoid.set(false);
     	}
- // solenoid code ends here and elevator code starts here
     	
-    	double elevation;
-    	final double maxInputElevation = 0.75;
-    	final double minInputElevation = 0.15;
-    	final double maxNegInputElevation=-.75;
-    	final double minNegInputElevation=-.15;
-    	    	
-    	elevation = thirdStick.getY();
-    	
-    	if (elevation >= maxInputElevation){
-    		elevation = maxInputElevation;
-    	}
-    	else if (elevation <= Math.abs(minInputElevation)){
-    		elevation = minInputElevation;
-    	}
-    	if (elevation <= maxNegInputElevation){
-    		elevation = maxNegInputElevation;
-    	}
-    	else if (elevation >= Math.abs(minNegInputElevation)){
-    		elevation = minNegInputElevation;
-    	} 
-    	
-    	if (outerLimitSwitch.get() && elevation > 0){
-    		elevation = 0;
-    	}
-    	else if (innerLimitSwitch.get() && elevation > 0){
-    		elevation = 0;
-    	}
-    	if (unlocked==false) {
-    		elevation=0;
-    	}
     	elevator.set(elevation);  
-    	
-    }    
+    }
+
+	private double joystickInputConditioning(double input, final double cautionInput, double minInput, double maxInput) {
+
+		if (Math.abs(input) >= maxInput) {
+    		if (input >= maxInput){
+    			input = maxInput;
+    		}
+    		else
+    		{
+    			input = -maxInput;
+    		}
+    	}
+    	else if (Math.abs(input) < minInput) {
+    		if (input >= cautionInput){
+    			input = minInput;
+    		}
+    		else if (input <= -cautionInput){
+    			input = -minInput;
+    		}
+    		else
+    		{
+    			input = 0;
+    		}
+    	}
+		return input;
+	}    
     
 
 
     public void rackMethod(){ 	// Lauren&Margaret&Emma wrote this part
     	double arms;
-    	final double maxInputArms = 0.75;
-    	final double minInputArms = 0.15;
     	    	
     	arms = thirdStick.getX();
-    	
-    	if (arms >= maxInputArms){
-    		arms = maxInputArms;
-    	}
-    	else if (arms <= Math.abs(minInputArms)){
-    		arms = minInputArms;
-    	}
+   
+    	arms = joystickInputConditioning(arms, cautionInput, minInputRack, maxInputRack);
     	
     	if (outerLimitSwitch.get() && arms > 0){
     		arms = 0;
     	}
-    	else if (innerLimitSwitch.get() && arms > 0){
+    	else if (innerLimitSwitch.get() && arms < 0){
     		arms = 0;
     	}
     	

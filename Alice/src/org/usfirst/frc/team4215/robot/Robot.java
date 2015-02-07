@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -87,8 +88,12 @@ public class Robot extends SampleRobot {
     public void operatorControl() {
         
         while (isOperatorControl() && isEnabled()) {
-//        	SmartDashboard
             drivingMethod();
+        	SmartDashboard.putNumber("Current 1",pdp.getCurrent(0));
+        	SmartDashboard.putNumber("Current 2",pdp.getCurrent(1));
+        	SmartDashboard.putNumber("Current 3",pdp.getCurrent(2));
+        	SmartDashboard.putNumber("Current 4",pdp.getCurrent(3));
+        	SmartDashboard.putData("Single Point",test);
         }
     }
     

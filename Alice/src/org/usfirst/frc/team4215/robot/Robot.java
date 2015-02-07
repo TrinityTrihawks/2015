@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Victor;
 
 
 /**
@@ -51,6 +51,9 @@ public class Robot extends SampleRobot {
 	DigitalInput upperElevatorLimitSwitch = new DigitalInput(3);
 	DigitalInput lowerElevatorLimitSwitch = new DigitalInput(4);
 	
+	SinglePoint leftSensor = new SinglePoint(0 , 0 , 1);
+	SinglePoint rightSensor = new SinglePoint(1 , 0 , 1);
+	
 	Victor brake = new Victor(7);
 		
 	private final double maxInputDriver = .75;
@@ -60,6 +63,7 @@ public class Robot extends SampleRobot {
 	private final double maxInputRack = 0.9;
 	private final double minInputRack = 0.1;
 	private final double cautionInput=-.05;
+	
 	
 
     /**
@@ -137,13 +141,13 @@ public class Robot extends SampleRobot {
 
     	if (elevation==0) {
 
-    		brakes.setSafetyEnabled(true);
+    		brake.setSafetyEnabled(true);
     	}
     	else {
-    		brakes.setSafetyEnabled(false);
-    		brakes.set(1);
-    		timer.delay(.25);
-    		brakes.setSafetyEnabled(true);
+    		brake.setSafetyEnabled(false);
+    		brake.set(1);
+    		Timer.delay(.25);
+    		brake.setSafetyEnabled(true);
     	}
     	
     	elevator1.set(elevation);
@@ -209,6 +213,8 @@ public class Robot extends SampleRobot {
     }
     public void autoStrafe(){
     	
+    	int counter = 0;
+    	
     	frontLeft.setSafetyEnabled(false);
     	frontRight.setSafetyEnabled(false);
     	backLeft.setSafetyEnabled(false);
@@ -220,10 +226,10 @@ public class Robot extends SampleRobot {
         	frontLeft.set(-.5);
         	backRight.set(-.5);
         	
-        	leftSensor.Scan();
-        	rightSensor.Scan();
+        	leftSensor.scan();
+        	rightSensor.scan();
         	
-        	if ( (leftSensor.Scan() <= 50) && (leftSensor.Scan() > 0) ) {
+        	if ( (leftSensor.scan() <= 50) && (leftSensor.scan() > 0) ) {
         		counter = counter + 1;
         	}
         	else {

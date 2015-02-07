@@ -36,27 +36,26 @@ public class Robot extends SampleRobot {
 	Joystick leftStick = new Joystick(0);
 	Joystick rightStick = new Joystick(1);
 	Joystick thirdStick = new Joystick(2);
-	Joystick elevationStick = new Joystick(2);
-	
-	// Talon def
+		
+	// Talon definition.
 	Talon frontLeft = new Talon(0);
 	Talon backLeft = new Talon(1);
-	Talon backRight = new Talon(2);			// I changed this back to port 2.
+	Talon backRight = new Talon(2);
 	Talon frontRight = new Talon(3);
-	Timer timerR= new Timer();
 
-	Talon elevator = new Talon(4);
-	Talon rackPinion = new Talon(5);
+	Talon elevator1 = new Talon(4);
+	Talon elevator2 = new Talon(5);
+	Talon rackPinion = new Talon(6);
 	
 	DigitalInput outerLimitSwitch = new DigitalInput(1);
 	DigitalInput innerLimitSwitch = new DigitalInput(2);
 	DigitalInput upperElevatorLimitSwitch = new DigitalInput(3);
 	DigitalInput lowerElevatorLimitSwitch = new DigitalInput(4);
 	
-	Solenoid solenoid = new Solenoid(1);
+	Victor brake = new Victor(7);
 		
-	private final double maxInputDriver = 1.0;
-    private final double minInputDriver = .1;
+	private final double maxInputDriver = .75;
+    private final double minInputDriver = .15;
 	private final double maxInputElevation = 0.9;
 	private final double minInputElevation = 0.1;
 	private final double maxInputRack = 0.9;
@@ -93,6 +92,7 @@ public class Robot extends SampleRobot {
     }
     
     public void drivingMethod(){
+    	
     	double tankLeftDrive = leftStick.getY();
     	double tankRightDrive = rightStick.getY();
     	
@@ -122,10 +122,21 @@ public class Robot extends SampleRobot {
 
     public void Elevator() {
     	
-    	double elevation;
-
-    	elevation = thirdStick.getY();
-    	
+		double elevation = thirdStick.getRawAxis(2);
+		
+		/*
+		float axis = stick.getRawAxis(axisNumber); //see table below for axis numbers
+		boolean button = stick.getRawButton(buttonNumber);
+		
+		Axis indexes:
+			1 - LeftX
+			2 - LeftY
+			3 - Triggers (Each trigger = 0 to 1, axis value = right - left)
+			4 - RightX
+			5 - RightY
+			6 - DPad Left/Right
+			(http://www.chiefdelphi.com/forums/showthread.php?threadid=82825)
+    	*/
     	elevation = joystickInputConditioning(elevation, cautionInput, minInputElevation, maxInputElevation);
     	    	
     	if (upperElevatorLimitSwitch.get() && elevation > 0){
@@ -136,13 +147,18 @@ public class Robot extends SampleRobot {
     	}
 
     	if (elevation==0) {
-    		solenoid.set(true);
+
+    		brakes.setSafetyEnabled(true);
     	}
     	else {
-    		solenoid.set(false);
+    		brakes.setSafetyEnabled(false);
+    		brakes.set(1);
+    		timer.delay(.25);
+    		brakes.setSafetyEnabled(true);
     	}
     	
-    	elevator.set(elevation);  
+    	elevator1.set(elevation);
+    	elevator2.set(elevation);
     }
 
 	private double joystickInputConditioning(double input, final double cautionInput, double minInput, double maxInput) {
@@ -174,9 +190,22 @@ public class Robot extends SampleRobot {
 
 
     public void rackMethod(){ 	// Lauren&Margaret&Emma wrote this part
-    	double arms;
-    	    	
-    	arms = thirdStick.getX();
+    	
+    	double arms = thirdStick.getRawAxis(4);
+    	
+		/*
+		float axis = stick.getRawAxis(axisNumber); //see table below for axis numbers
+		boolean button = stick.getRawButton(buttonNumber);
+		
+		Axis indexes:
+			1 - LeftX
+			2 - LeftY
+			3 - Triggers (Each trigger = 0 to 1, axis value = right - left)
+			4 - RightX
+			5 - RightY
+			6 - DPad Left/Right
+			(http://www.chiefdelphi.com/forums/showthread.php?threadid=82825)
+    	*/
    
     	arms = joystickInputConditioning(arms, cautionInput, minInputRack, maxInputRack);
     	
@@ -189,11 +218,54 @@ public class Robot extends SampleRobot {
     	
     	rackPinion.set(arms);    	
     }
+<<<<<<< HEAD
     
     public void AutonomousStrafe(){
     	
     }
     
+=======
+    public void autoStrafe(){
+    	
+    	frontLeft.setSafetyEnabled(false);
+    	frontRight.setSafetyEnabled(false);
+    	backLeft.setSafetyEnabled(false);
+    	backRight.setSafetyEnabled(false);
+    	
+        while (counter < 4) {
+        	frontRight.set(.5);
+        	backLeft.set(.5);
+        	frontLeft.set(-.5);
+        	backRight.set(-.5);
+        	
+        	leftSensor.Scan();
+        	rightSensor.Scan();
+        	
+        	if ( (leftSensor.Scan() <= 50) && (leftSensor.Scan() > 0) ) {
+        		counter = counter + 1;
+        	}
+        	else {
+        		
+        	}
+        	
+        	// if count is 3, slow down to half speed
+        	if (counter == 3) {
+        		frontRight.set(.25);
+            	backLeft.set(.25);
+            	frontLeft.set(-.25);
+            	backRight.set(-.25);
+        	}
+        }
+        
+        
+        frontRight.set(0);
+    	backLeft.set(0);
+    	frontLeft.set(0);
+    	backRight.set(0);
+    	
+    	counter = 0;
+    }
+>>>>>>> origin/Joey's
     /**
      * Runs during test mode
      */

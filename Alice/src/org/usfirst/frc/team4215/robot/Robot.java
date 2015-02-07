@@ -36,10 +36,10 @@ public class Robot extends SampleRobot {
 	Joystick rightStick = new Joystick(1);
 	Joystick thirdStick = new Joystick(2);
 		
-	// Talon def
+	// Talon definition.
 	Talon frontLeft = new Talon(0);
 	Talon backLeft = new Talon(1);
-	Talon backRight = new Talon(2);			// I changed this back to port 2.
+	Talon backRight = new Talon(2);
 	Talon frontRight = new Talon(3);
 	Timer timerR= new Timer();
 
@@ -60,9 +60,6 @@ public class Robot extends SampleRobot {
 	private final double maxInputRack = 0.9;
 	private final double minInputRack = 0.1;
 	private final double cautionInput=-.05;
-	
-	public double arms;
-	public double elevation;
 	
 
     /**
@@ -113,9 +110,22 @@ public class Robot extends SampleRobot {
     }
 
     public void Elevator() {
-
-		double elevation = thirdStick.getRawAxis(2);
     	
+		double elevation = thirdStick.getRawAxis(2);
+		
+		/*
+		float axis = stick.getRawAxis(axisNumber); //see table below for axis numbers
+		boolean button = stick.getRawButton(buttonNumber);
+		
+		Axis indexes:
+			1 - LeftX
+			2 - LeftY
+			3 - Triggers (Each trigger = 0 to 1, axis value = right - left)
+			4 - RightX
+			5 - RightY
+			6 - DPad Left/Right
+			(http://www.chiefdelphi.com/forums/showthread.php?threadid=82825)
+    	*/
     	elevation = joystickInputConditioning(elevation, cautionInput, minInputElevation, maxInputElevation);
     	    	
     	if (upperElevatorLimitSwitch.get() && elevation > 0){
@@ -164,8 +174,22 @@ public class Robot extends SampleRobot {
 
 
     public void rackMethod(){ 	// Lauren&Margaret&Emma wrote this part
-    	    	
+    	
     	double arms = thirdStick.getRawAxis(4);
+    	
+		/*
+		float axis = stick.getRawAxis(axisNumber); //see table below for axis numbers
+		boolean button = stick.getRawButton(buttonNumber);
+		
+		Axis indexes:
+			1 - LeftX
+			2 - LeftY
+			3 - Triggers (Each trigger = 0 to 1, axis value = right - left)
+			4 - RightX
+			5 - RightY
+			6 - DPad Left/Right
+			(http://www.chiefdelphi.com/forums/showthread.php?threadid=82825)
+    	*/
    
     	arms = joystickInputConditioning(arms, cautionInput, minInputRack, maxInputRack);
     	

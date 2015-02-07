@@ -66,7 +66,6 @@ public class Robot extends SampleRobot {
 	private final double minInputRack = 0.1;
 	private final double cautionInput=-.05;
 	
-	Timer timer = new Timer();
 	
 
     /**
@@ -159,7 +158,7 @@ public class Robot extends SampleRobot {
     	else {
     		brake.setSafetyEnabled(false);
     		brake.set(1);
-    		timer.delay(.25);
+    		Timer.delay(.25);
     		brake.setSafetyEnabled(true);
     	}
     	

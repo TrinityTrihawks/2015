@@ -134,24 +134,24 @@ public class Robot extends SampleRobot {
     public void Elevator() {
     	
     	double elevation;
-    	final double maxInputElevation = -0.75;
-    	final double minInputElevation = -0.15;
+    	final double maxInputElevation = 0.75;
+    	final double minInputElevation = 0.15;
 
     	final double cautionInput=-.05;
     	    	
     	elevation = thirdStick.getY();
     	
-    	if (elevation >= Math.abs(maxInputElevation)){
-    		elevation = Math.abs(maxInputElevation);
-    	}
-    	else if (elevation <= Math.abs(minInputElevation) && elevation <= Math.abs(cautionInput)){
-    		elevation = Math.abs(minInputElevation);
-    	}
-    	if (elevation <= maxInputElevation){
+    	if (elevation >= maxInputElevation){
     		elevation = maxInputElevation;
     	}
-    	else if (elevation >= (minInputElevation) && elevation >= cautionInput) {
+    	else if (elevation <= minInputElevation && elevation >= Math.abs(cautionInput)){
     		elevation = minInputElevation;
+    	}
+    	if (elevation <= -1*maxInputElevation){
+    		elevation = -1*maxInputElevation;
+    	}
+    	else if (elevation >= (-1*minInputElevation) && elevation <= cautionInput) {
+    		elevation = -1*minInputElevation;
     	} 
     	
     	if (outerLimitSwitch.get() && elevation > 0){
@@ -163,6 +163,7 @@ public class Robot extends SampleRobot {
     	if (elevation>0) {
     		timerR.start();
     	}
+    	
     	if (elevation==0) {
     		solenoid.set(true);
     	}
@@ -175,6 +176,10 @@ public class Robot extends SampleRobot {
     	elevator.set(elevation);  
     	
     }    
+    
+    public void gripTote() {
+    	rackPinion.set(.75);
+    }
     
 
 

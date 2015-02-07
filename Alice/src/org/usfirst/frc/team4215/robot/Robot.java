@@ -41,17 +41,17 @@ public class Robot extends SampleRobot {
 	Talon backLeft = new Talon(1);
 	Talon backRight = new Talon(2);
 	Talon frontRight = new Talon(3);
-	Timer timerR= new Timer();
 
-	Talon elevator = new Talon(4);
-	Talon rackPinion = new Talon(5);
+	Talon elevator1 = new Talon(4);
+	Talon elevator2 = new Talon(5);
+	Talon rackPinion = new Talon(6);
 	
 	DigitalInput outerLimitSwitch = new DigitalInput(1);
 	DigitalInput innerLimitSwitch = new DigitalInput(2);
 	DigitalInput upperElevatorLimitSwitch = new DigitalInput(3);
 	DigitalInput lowerElevatorLimitSwitch = new DigitalInput(4);
 	
-	Solenoid solenoid = new Solenoid(1);
+	Victor brake = new Victor(7);
 		
 	private final double maxInputDriver = .75;
     private final double minInputDriver = .15;
@@ -136,13 +136,18 @@ public class Robot extends SampleRobot {
     	}
 
     	if (elevation==0) {
-    		solenoid.set(true);
+
+    		brakes.setSafetyEnabled(true);
     	}
     	else {
-    		solenoid.set(false);
+    		brakes.setSafetyEnabled(false);
+    		brakes.set(1);
+    		timer.delay(.25);
+    		brakes.setSafetyEnabled(true);
     	}
     	
-    	elevator.set(elevation);  
+    	elevator1.set(elevation);
+    	elevator2.set(elevation);
     }
 
 	private double joystickInputConditioning(double input, final double cautionInput, double minInput, double maxInput) {

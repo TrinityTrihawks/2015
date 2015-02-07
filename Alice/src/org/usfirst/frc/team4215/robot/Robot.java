@@ -178,7 +178,46 @@ public class Robot extends SampleRobot {
     	
     	rackPinion.set(arms);    	
     }
-    
+    public void autoStrafe(){
+    	
+    	frontLeft.setSafetyEnabled(false);
+    	frontRight.setSafetyEnabled(false);
+    	backLeft.setSafetyEnabled(false);
+    	backRight.setSafetyEnabled(false);
+    	
+        while (counter < 4) {
+        	frontRight.set(.5);
+        	backLeft.set(.5);
+        	frontLeft.set(-.5);
+        	backRight.set(-.5);
+        	
+        	leftSensor.Scan();
+        	rightSensor.Scan();
+        	
+        	if ( (leftSensor.Scan() <= 50) && (leftSensor.Scan() > 0) ) {
+        		counter = counter + 1;
+        	}
+        	else {
+        		
+        	}
+        	
+        	// if count is 3, slow down to half speed
+        	if (counter == 3) {
+        		frontRight.set(.25);
+            	backLeft.set(.25);
+            	frontLeft.set(-.25);
+            	backRight.set(-.25);
+        	}
+        }
+        
+        
+        frontRight.set(0);
+    	backLeft.set(0);
+    	frontLeft.set(0);
+    	backRight.set(0);
+    	
+    	counter = 0;
+    }
     /**
      * Runs during test mode
      */

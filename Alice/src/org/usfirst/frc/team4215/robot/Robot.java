@@ -9,11 +9,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
-<<<<<<< HEAD
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-=======
 
->>>>>>> origin/Joey's
 
 /**
  * This is a demo program showing the use of the RobotDrive class.
@@ -57,12 +54,8 @@ public class Robot extends SampleRobot {
 	DigitalInput lowerElevatorLimitSwitch = new DigitalInput(4);
 	
 	SinglePoint leftSensor = new SinglePoint(0 , 0 , 1);
-<<<<<<< HEAD
-	SinglePoint rightSensor = new SinglePoint(1 , 0, 1);
-=======
 	SinglePoint rightSensor = new SinglePoint(1 , 0 , 1);
->>>>>>> origin/Joey's
-	
+
 	Victor brake = new Victor(7);
 		
 	private final double maxInputDriver = .75;

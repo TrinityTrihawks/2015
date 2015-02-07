@@ -35,8 +35,7 @@ public class Robot extends SampleRobot {
 	Joystick leftStick = new Joystick(0);
 	Joystick rightStick = new Joystick(1);
 	Joystick thirdStick = new Joystick(2);
-	Joystick elevationStick = new Joystick(2);
-	
+		
 	// Talon def
 	Talon frontLeft = new Talon(0);
 	Talon backLeft = new Talon(1);
@@ -54,13 +53,16 @@ public class Robot extends SampleRobot {
 	
 	Solenoid solenoid = new Solenoid(1);
 		
-	private final double maxInputDriver = 1.0;
-    private final double minInputDriver = .1;
+	private final double maxInputDriver = .75;
+    private final double minInputDriver = .15;
 	private final double maxInputElevation = 0.9;
 	private final double minInputElevation = 0.1;
 	private final double maxInputRack = 0.9;
 	private final double minInputRack = 0.1;
 	private final double cautionInput=-.05;
+	
+	public double arms;
+	public double elevation;
 	
 
     /**
@@ -82,6 +84,7 @@ public class Robot extends SampleRobot {
     }
     
     public void drivingMethod(){
+    	
     	double tankLeftDrive = leftStick.getY();
     	double tankRightDrive = rightStick.getY();
     	
@@ -110,10 +113,8 @@ public class Robot extends SampleRobot {
     }
 
     public void Elevator() {
-    	
-    	double elevation;
 
-    	elevation = thirdStick.getY();
+		double elevation = thirdStick.getRawAxis(2);
     	
     	elevation = joystickInputConditioning(elevation, cautionInput, minInputElevation, maxInputElevation);
     	    	
@@ -163,9 +164,8 @@ public class Robot extends SampleRobot {
 
 
     public void rackMethod(){ 	// Lauren&Margaret&Emma wrote this part
-    	double arms;
     	    	
-    	arms = thirdStick.getX();
+    	double arms = thirdStick.getRawAxis(4);
    
     	arms = joystickInputConditioning(arms, cautionInput, minInputRack, maxInputRack);
     	

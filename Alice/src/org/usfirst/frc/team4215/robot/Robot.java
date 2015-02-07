@@ -194,6 +194,19 @@ public class Robot extends SampleRobot {
     	
     }
     
+    
+    /*
+     *  Will close arms until inner limitswitch with people
+     */
+    public void AutonomousGripTote() {    //TDJ wrote this
+    	
+    	while (!innerLimitSwitch.get()) {
+        	rackPinion.set(.75);   		
+    	}
+    	rackPinion.set(0);
+
+    }
+    
     /**
      * Runs during test mode
      */

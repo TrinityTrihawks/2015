@@ -207,6 +207,18 @@ public class Robot extends SampleRobot {
 
     }
     
+    public void AutonomousPlaceToteandRelease() {
+    	while (!lowerElevatorLimitSwitch.get()) {
+    		elevator.set(-.75);
+    	}
+	if (lowerElevatorLimitSwitch.get()) {
+    			elevator.set(0);
+        		rackPinion.set(-.75);  
+        		Timer.delay(.5);
+        		rackPinion.set(0);
+    	}
+    }
+    
     /**
      * Runs during test mode
      */

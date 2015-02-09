@@ -207,10 +207,10 @@ public class Robot extends SampleRobot {
 
     }
     
-    public void AutonomousPlaceToteandRelease() {
-    	while (!lowerElevatorLimitSwitch.get()) {
-    		elevator.set(-.75);
-    	}
+    public void AutonomousRelease() {
+   // while (!lowerElevatorLimitSwitch.get()) { apparently this is covered in elevate script
+   // 	elevator.set(-.75); 
+   // }
 	if (lowerElevatorLimitSwitch.get()) {
     			elevator.set(0);
         		rackPinion.set(-.75);  

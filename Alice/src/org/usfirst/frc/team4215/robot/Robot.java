@@ -224,6 +224,14 @@ public class Robot extends SampleRobot {
     	rackPinion.set(arms);    	
     }
 
+    public void autonomousGripTote() {    //TDJ wrote this
+    	
+    	while (!innerLimitSwitch.get()) {
+        	rackPinion.set(.75);   		
+    	}
+    	rackPinion.set(0);
+
+    }
 
     public void autoStrafe(){
     	

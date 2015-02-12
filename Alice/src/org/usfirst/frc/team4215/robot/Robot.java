@@ -75,7 +75,7 @@ public class Robot extends SampleRobot {
 	AnalogInput test = new AnalogInput(0);
     public void autonomous() {
         while (!isOperatorControl() && isEnabled()) {
-        	AutonomousStrafe();
+        	autoStrafe();
         	SmartDashboard.putNumber("Current 1",pdp.getCurrent(0));
         	SmartDashboard.putNumber("Current 2",pdp.getCurrent(1));
         	SmartDashboard.putNumber("Current 3",pdp.getCurrent(2));

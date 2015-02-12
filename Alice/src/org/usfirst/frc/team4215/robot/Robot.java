@@ -224,10 +224,6 @@ public class Robot extends SampleRobot {
     	rackPinion.set(arms);    	
     }
 
-    
-    public void AutonomousStrafe(){
-    	
-    }
 
     public void autoStrafe(){
     	

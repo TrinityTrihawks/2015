@@ -8,15 +8,16 @@ import edu.wpi.first.wpilibj.AnalogInput;
 
 public class SinglePoint {
 	int channel;
-	double centimetre = 90;
+	double metre = 90;
 	double offset;
 	int unitsoflength;
-	AnalogInput lasr = new AnalogInput(channel);
+	AnalogInput lasr;
 	
 	public SinglePoint( int setChannel, double setOffset, int setUnitsoflength) {
 		channel = setChannel;
 		offset = setOffset;
 		unitsoflength = setUnitsoflength;
+		lasr = new AnalogInput(channel);
 	}
 	
 	/*
@@ -32,15 +33,15 @@ public class SinglePoint {
 		 
 		 switch(unitsoflength){
 		 			//Metric
-		 case 1: distance += ((volt*centimetre)+50);
+		 case 1: distance += ((volt*metre)+50);
 		 			break;
 		 		
 		 			//(Light/Time)ic
-		 case 2: distance += (((volt*centimetre)+50))*.0033335696;
+		 case 2: distance += (((volt*metre)+50))*.0033335696;
 				 	break;
 				 
 				 	//Barbaric
-		 case 3: distance += (((volt*centimetre) + 50))*.0393701;
+		 case 3: distance += (((volt*metre) + 50))*.0393701;
 		 		 	break;
 		 }
 		 
@@ -66,9 +67,11 @@ public class SinglePoint {
 	
 	//Get/Set methods for Metre 
 	public double getMetre(){
-		return centimetre;
+		return metre;
 	}
-	
+	public void setMetre(double setMetre){
+		metre = setMetre;
+	}
 	
 	//Get method for Channel 
 	public int getChannel(){

@@ -1,12 +1,17 @@
 package org.usfirst.frc.team4215.robot;
 
 
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Gyro;
+import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 /**
@@ -50,11 +55,26 @@ public class Robot extends SampleRobot {
 	DigitalInput upperElevatorLimitSwitch = new DigitalInput(3);
 	DigitalInput lowerElevatorLimitSwitch = new DigitalInput(4);
 	
+	BuiltInAccelerometer accg = new BuiltInAccelerometer();
+	
+	Timer time = new Timer();
+	
 	SinglePoint leftSensor = new SinglePoint(0 , 0 , 1);
 	SinglePoint rightSensor = new SinglePoint(1 , 0 , 1);
 	
 	Victor brake = new Victor(7);
-		
+	
+	Ultrasonic ultrasonic = new Ultrasonic(0 , 1);		//TODO: ports?
+	
+	int count = 0;
+	
+	double accmss;
+	double speedms;
+	double hertz;
+	
+	final double autogo = 116.8;
+	final long wt = 100; 
+	
 	private final double maxInputDriver = .75;
     private final double minInputDriver = .15;
 	private final double maxInputElevation = 0.9;
@@ -65,21 +85,34 @@ public class Robot extends SampleRobot {
 	
 	
 
-    /**
-     * Drive left & right motors for 2 seconds then stop
-     */
     public void autonomous() {
-        
+    	boolean autoComplete = false;
+        while (isAutonomous() && isEnabled() && !autoComplete) {
+        	
+        	try {
+        		autonomousA();
+        	}
+        	catch(Exception e) {
+        		SmartDashboard.putString("Exception", e.getMessage());
+        	}
+        	finally {
+        		autoComplete = true;
+        	}
+        }
     }
     
-    /**
-     * Runs the motors with arcade steering.
-     */
-    public void operatorControl() {
+    public void operatorControl(){
         
         while (isOperatorControl() && isEnabled()) {
-//        	SmartDashboard
+        	SmartDashboard.putNumber("Accleration M/s^2", accmss);
+        	SmartDashboard.putNumber("Speed M/s", speedms);
             drivingMethod();
+            try {
+				time.wait(1);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
     }
     
@@ -105,7 +138,8 @@ public class Robot extends SampleRobot {
     	else {
     		strafe = .5 * tankLeftStrafe;
     	}    	
-    	
+    	accmss = accg.getX()*9.81;
+    	speedms = accmss * .001;
     	frontLeft.set(-tankLeftDrive + strafe);
     	backLeft.set(-tankLeftDrive - strafe);
     	backRight.set(tankRightDrive - strafe);
@@ -178,9 +212,34 @@ public class Robot extends SampleRobot {
     	}
 		return input;
 	}    
-    
-
-
+    /*
+	public void autoTest() throws InterruptedException{
+		double t1 = 0;
+		double v1 = 0;
+		double distance = 0;
+		time.start();
+		while(!(distance >= autogo) && isEnabled()){
+			frontLeft.set(.5);
+			backLeft.set(.5);
+			backRight.set(.5);
+			frontRight.set(.5);
+			
+			v1 = accg.getX()*981;
+			// Calcutates distance with conversion rate for var wt
+			distance += v1*Math.pow(wt*.001,2);
+			count++;
+			time.wait(wt);
+		}
+		hertz = count/time.get();
+		SmartDashboard.putNumber("Auto Hz", hertz);
+    	SmartDashboard.putNumber("Auto Count", count);
+		frontLeft.set(0);
+		backLeft.set(0);
+		backRight.set(0);
+		frontRight.set(0);
+	}
+	*/
+	
     public void rackMethod(){ 	// Lauren&Margaret&Emma wrote this part
     	
     	double arms = thirdStick.getRawAxis(4);
@@ -255,6 +314,66 @@ public class Robot extends SampleRobot {
     /**
      * Runs during test mode
      */
+    
+    
+    
+    public void autonomousA() {
+    	RobotDrive myRobotDrive = new RobotDrive(0, 1, 2, 3);
+    	Gyro gyro = new Gyro(0);
+    	gyro.initGyro();
+    	//TODO: gyro sampling rate
+    	
+    	// minimum input for rack to prevent the bin from slipping
+    	rackPinion.set(-.02);
+    	
+    	// lift the bin
+    	elevator1.set(.5);
+    	Timer.delay(.5);
+    	
+    	// move foward to tote
+    	while(ultrasonic.getRangeMM() < 500) {
+    		myRobotDrive.mecanumDrive_Cartesian(.25, 0, 0, gyro.getAngle());
+    	}
+    	myRobotDrive.stopMotor();
+    	
+    	// lower bin onto the tote
+    	elevator1.set(-.25);
+    	Timer.delay(.8);
+    	
+    	// open arms
+    	rackPinion.set(.25);
+    	Timer.delay(.3);
+    	rackPinion.stopMotor();
+    	
+    	// move arms down to the tote level
+    	elevator1.set(-.5);
+    	Timer.delay(.2);
+    	elevator1.stopMotor();
+    	
+    	// close arms
+    	rackPinion.set(.3);
+    	Timer.delay(.25);
+    	rackPinion.set(-.02);
+    	
+    	// lift the tote
+    	elevator1.set(.4);
+    	Timer.delay(.1);
+    	elevator1.stopMotor();
+    	
+    	// rotate the robot
+    	while (gyro.getAngle() < 90) {
+    		myRobotDrive.mecanumDrive_Cartesian(0, 0, .25, gyro.getAngle());
+    	}
+    	myRobotDrive.stopMotor();
+    	
+    	// drive the robot forward into the auto zone
+    	while(ultrasonic.getRangeMM() < 500) {
+    		myRobotDrive.mecanumDrive_Cartesian(.25, 0, 0, gyro.getAngle());
+    	}
+    	myRobotDrive.stopMotor();
+    	
+    	
+    }
     public void test() {
     }
 }

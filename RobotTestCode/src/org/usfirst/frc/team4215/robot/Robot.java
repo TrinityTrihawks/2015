@@ -102,7 +102,7 @@ public class Robot extends SampleRobot {
     public void autonomousB() {
     	double range = 0.0;
         do {
-        	rangefinder.getSmartDashboardType();
+//        	rangefinder.getSmartDashboardType();
         	double value = rangefinder.pidGet();
             range = (value / (5.0 / 512.0));                // The 5 is the voltage range, 512 is
     		frontLeft.set(.2);

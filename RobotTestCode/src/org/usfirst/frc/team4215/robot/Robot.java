@@ -1,128 +1,103 @@
 package org.usfirst.frc.team4215.robot;
 
-import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.Joystick;
+
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Gyro;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SampleRobot;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
-public class Robot extends SampleRobot {
-	public static void main(String[] args) {
+/**
+ * This is a demo program showing the use of the RobotDrive class.
+ * The SampleRobot class is the base of a robot application that will automatically call your
+ * Autonomous and OperatorControl methods at the right time as controlled by the switches on
+ * the driver station or the field controls.
+ *
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to each mode, as described in the SampleRobot
+ * documentation. If you change the name of this class or the package after
+ * creating this project, you must also update the manifest file in the resource
+ * directory.
+ *
+ * WARNING: While it may look like a good choice to use for your code if you're inexperienced,
+ * don't. Unless you know what you are doing, complex code will be much more difficult under
+ * this system. Use IterativeRobot or Command-Based instead if you're new.
+ */
+public class Robot extends SampleRobot { 
+	
+	// Talon def
+	Talon frontLeft = new Talon(0);
+	Talon backLeft = new Talon(1);
+	Talon backRight = new Talon(2);			
+	Talon frontRight = new Talon(3);
+	
+	Ultrasonic rangefinder = new Ultrasonic(2,1);
+	
+	Timer time = new Timer();
+	
+	double frontLeftDriveValue = 0.0;
+	double frontRightDriveValue = 0.0;
+	double backLeftDriveValue = 0.0;
+	double backRightDriveValue = 0.0;
 		
-	}
 	
-	// Objects defined for drive train.
-	Talon LeftFront = new Talon(0);
-	Talon RightFront = new Talon(1);
-	Talon LeftBack = new Talon(2);
-	Talon RightBack = new Talon(3);
-	
-	double tankLeft;
-	double tankRight;
-	double strafe;
-	
-	// Objects defined for rack and pinion.
-	Talon RackPinion = new Talon(4);
-	
-	// Objects defined for elevator.
-	Talon Elevator = new Talon(5);
-	
-    /**
-     * This function is run when the robot is first started up and should be
-     * used for any initialization code.
-     */
-    public void robotInit() {
-    	
+	private final double maxInputDriver = 1.0;
+    private final double minInputDriver = 0.0;
+		
+    public void operatorControl() {   	
+        while (isOperatorControl() && isEnabled()) {
+        }
     }
-    
+        
+    public void autonomous() {
 
-    public void DriveMethod() {
-    	
-    	// Tank Drive for teleop...
-    		// LeftStick's y-axis controls the left half of the robot.
-    		if (LeftStick.getY()>.8) {
-    			tankLeft = 1;
-    		}
-    		else if ((LeftStick.getY()<.1) && (LeftStick.getY()>-.1)) {
-    			tankLeft = 0;
-    		}
-    		else if (LeftStick.getY()<-.8) {
-    			tankLeft = -1;
-    		}
-    		else {
-    			tankLeft = LeftStick.getY();
-    		}
-    		
+    	boolean autoComplete = false;
+        while (isAutonomous() && isEnabled() && !autoComplete) {	
+        	try {
+        		autonomousA();
+        	}
+        	catch(Exception e) {
+        		SmartDashboard.putString("Exception", e.getMessage());
+        	}
+        	finally {
+        		autoComplete = true;
+        	}
+        }
+    }
 
-    		// RightStick's y-axis controls the right half of the robot.
-    		if (RightStick.getY()>.8) {
-    			tankRight = 1;
-    		}
-    		else if ((RightStick.getY()<.1) && (RightStick.getY()>-.1)) {
-    			tankRight = 0;
-    		}
-    		else if (RightStick.getY()<-.8) {
-    			tankRight = -1;
-    		}
-    		else {
-    			tankRight = RightStick.getY();
-    		}
-
-
-    		// 
-    		if ((LeftStick.getX()<-.1) || (LeftStick.getX()>.1)) {
-    			strafe = .5*LeftStick.getX();
-    		}
-    		if ((RightStick.getX()<-.2) || (RightStick.getX()>.2)){
-    			strafe = RightStick.getX();
-    		}
-    		
-    		
-    		
-    		RightFront.set(tankRight + strafe);
-    		RightBack.set(tankRight - strafe);
-    		
-    		LeftFront.set(tankLeft - strafe);
-    		LeftBack.set(tankLeft + strafe);
+    public void autonomousA() {
+//    	RobotDrive myRobotDrive = new RobotDrive(0, 1, 2, 3);
+//    	Gyro gyro = new Gyro(0);
+//    	gyro.initGyro();
+    	//TODO: gyro sampling rate
+    	    	
+    	// move foward to tote
+    	while(rangefinder.getRangeMM() < 500) {
+//    		myRobotDrive.mecanumDrive_Cartesian(.25, 0, 0, gyro.getAngle());
+    		frontLeft.set(.2);
+    		backLeft.set(.2);
+    		backRight.set(.2);			
+    		frontRight.set(.2);
     	}
-
-
-    
-    /**
-     * This function is run once each time the robot enters autonomous mode
-     */
-    public void autonomousInit() {
-    	
+//    	myRobotDrive.stopMotor();
+		frontLeft.set(0);
+		backLeft.set(0);
+		backRight.set(0);			
+		frontRight.set(0);
     }
 
-    /**
-     * This function is called periodically during autonomous
+    /** 
+     * Runs during test mode
      */
-    public void autonomousPeriodic() {
-    	
+    public void test() {    	
     }
-    
-    /**
-     * This function is called once each time the robot enters tele-operated mode
-     */
-    public void teleopInit(){
-    	
-    }
-
-    /**
-     * This function is called periodically during operator control
-     */
-    public void teleopPeriodic() {
-    	
-    	while (isOperatorControl() && isEnabled()) { 
-    		
-    	}
-    
-    }
-    /**
-     * This function is called periodically during test mode
-     */
-    public void testPeriodic() {
-    	
-    }
-    
 }

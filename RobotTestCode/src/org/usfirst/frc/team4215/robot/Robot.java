@@ -53,6 +53,10 @@ public class Robot extends SampleRobot {
 	
 	private final double maxInputDriver = 1.0;
     private final double minInputDriver = 0.0;
+    
+    Talon elevator1 = new Talon(4);
+    Talon rackPinion = new Talon(6);
+    Ultrasonic ultrasonic = new Ultrasonic(2, 1);
 		
     public void operatorControl() {   	
         while (isOperatorControl() && isEnabled()) {
@@ -166,6 +170,78 @@ public class Robot extends SampleRobot {
 		backLeft.stopMotor();
 		backRight.stopMotor();
 		frontRight.stopMotor();
+    }
+
+    public void autonomousTimeBased() {
+//    	RobotDrive myRobotDrive = new RobotDrive(0, 1, 2, 3);
+    	
+    	// minimum input for rack to prevent the bin from slipping
+    	rackPinion.set(-.02);
+    	
+    	// lift the bin
+    	elevator1.set(.5);
+    	Timer.delay(.5);
+    	
+    	// move foward to tote
+    	frontLeft.set(.25);
+    	backLeft.set(.25);
+    	backRight.set(.25);
+    	frontRight.set(.25);
+    	Timer.delay(1);
+    	
+    	frontLeft.set(0);
+    	backLeft.set(0);
+    	backRight.set(0);
+    	frontRight.set(0);
+    	
+    	// lower bin onto the tote
+    	elevator1.set(-.25);
+    	Timer.delay(.8);
+    	
+    	// open arms
+    	rackPinion.set(.25);
+    	Timer.delay(.3);
+    	rackPinion.stopMotor();
+    	
+    	// move arms down to the tote level
+    	elevator1.set(-.5);
+    	Timer.delay(.2);
+    	elevator1.stopMotor();
+    	
+    	// close arms
+    	rackPinion.set(.3);
+    	Timer.delay(.25);
+    	rackPinion.set(-.02);
+    	
+    	// lift the tote
+    	elevator1.set(.4);
+    	Timer.delay(.1);
+    	elevator1.stopMotor();
+    	
+    	// rotate the robot
+    	frontLeft.set(-1);
+    	backLeft.set(-1);
+    	backRight.set(1);
+    	frontRight.set(1);
+    	Timer.delay(.25);
+    	
+    	// drive the robot forward into the auto zone
+    	frontLeft.set(.5);
+    	backLeft.set(.5);
+    	backRight.set(.5);
+    	frontRight.set(.5);
+    	Timer.delay(2);
+    	
+    	frontLeft.set(.25);
+    	backLeft.set(.25);
+    	backRight.set(.25);
+    	frontRight.set(.25);
+    	Timer.delay(.5);
+    	
+    	frontLeft.set(0);
+    	backLeft.set(0);
+    	backRight.set(0);
+    	frontRight.set(0);
     }
 
     /** 

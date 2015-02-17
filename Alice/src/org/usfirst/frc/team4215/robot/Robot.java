@@ -370,9 +370,7 @@ public class Robot extends SampleRobot {
     	while(ultrasonic.getRangeMM() < 500) {
     		myRobotDrive.mecanumDrive_Cartesian(.25, 0, 0, gyro.getAngle());
     	}
-    	myRobotDrive.stopMotor();
-    	
-    	
+    	myRobotDrive.stopMotor();    	
     }
     public void test() {
     }

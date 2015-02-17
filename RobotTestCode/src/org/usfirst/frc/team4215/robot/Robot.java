@@ -86,75 +86,87 @@ public class Robot extends SampleRobot {
 //    		myRobotDrive.mecanumDrive_Cartesian(.25, 0, 0, gyro.getAngle());
     		frontLeft.set(.2);
     		backLeft.set(.2);
-    		backRight.set(.2);			
-    		frontRight.set(.2);
+    		backRight.set(-.2);
+    		frontRight.set(-.2);
     		SmartDashboard.putNumber("rangeFinder dist", rangefinder.getRangeMM());
     		SmartDashboard.putString("rangeFinder units", rangefinder.getDistanceUnits().toString());
     	}
 //    	myRobotDrive.stopMotor();
-		frontLeft.set(0);
-		backLeft.set(0);
-		backRight.set(0);			
-		frontRight.set(0);
+    	frontLeft.stopMotor();
+		backLeft.stopMotor();
+		backRight.stopMotor();
+		frontRight.stopMotor();
     }
 
     public void autonomousB() {
-//    	RobotDrive myRobotDrive = new RobotDrive(0, 1, 2, 3);
-    	Gyro gyro = new Gyro(0);
-    	gyro.initGyro();
-    	    	
-    	while(gyro.getAngle() < 360) {
-//    		myRobotDrive.mecanumDrive_Cartesian(.25, 0, 0, gyro.getAngle());
-    		frontLeft.set(.2);
-    		backLeft.set(.2);
-    		backRight.set(-.2);			
-    		frontRight.set(-.2);
-    		SmartDashboard.putNumber("gyro degrees", gyro.getAngle());
-    		SmartDashboard.putNumber("gyro rate", gyro.getRate());
-    	}
-//    	myRobotDrive.stopMotor();
-		frontLeft.set(0);
-		backLeft.set(0);
-		backRight.set(0);			
-		frontRight.set(0);
-    }
-
-    public void autonomousC() {
-    	
-    	I2CGyro gyro = new I2CGyro();
-    	
-    	double timerStart = Timer.getFPGATimestamp();
-    	double timerNow = Timer.getFPGATimestamp();
-    	double degrees = 0.0;
-    	do
-    	{
-    		frontLeft.set(.2);
-    		backLeft.set(.2);
-    		backRight.set(-.2);			
-    		frontRight.set(-.2);
-    		
-    		timerNow = Timer.getFPGATimestamp();
-    		degrees = gyro.getDegrees(timerStart - timerNow);
-    		SmartDashboard.putNumber("gyro degrees", degrees);
-    	} while (degrees < 360);
-    	
-		frontLeft.set(0);
-		backLeft.set(0);
-		backRight.set(0);			
-		frontRight.set(0);
-    }
-
-    public void autonomousD() {
     	double range = 0.0;
         do {
+        	rangefinder.getSmartDashboardType();
         	double value = rangefinder.pidGet();
             range = (value / (5.0 / 512.0));                // The 5 is the voltage range, 512 is
+    		frontLeft.set(.2);
+    		backLeft.set(.2);
+    		backRight.set(-.2);
+    		frontRight.set(-.2);
     		SmartDashboard.putNumber("rangeFinder value", value);
     		SmartDashboard.putNumber("rangeFinder range", range);
         }
     	while(range < 500);
+
+        frontLeft.stopMotor();
+		backLeft.stopMotor();
+		backRight.stopMotor();
+		frontRight.stopMotor();
     }
         
+    public void autonomousC() {
+//    	RobotDrive myRobotDrive = new RobotDrive(0, 1, 2, 3);
+    	Gyro gyro = new Gyro(0);
+    	gyro.initGyro();
+    	double degrees= 0.0;
+		SmartDashboard.putNumber("gyro degrees", degrees);
+    	    	
+		frontLeft.set(-.4);
+		backLeft.set(-.4);
+		backRight.set(-.4);			
+		frontRight.set(-.4);
+
+		do {
+    		degrees = gyro.getAngle();
+    		SmartDashboard.putNumber("gyro degrees", degrees);
+//    		myRobotDrive.mecanumDrive_Cartesian(.25, 0, 0, degrees);
+    	} while (degrees < 90);
+//    	myRobotDrive.stopMotor();
+
+		frontLeft.stopMotor();
+		backLeft.stopMotor();
+		backRight.stopMotor();
+		frontRight.stopMotor();
+    }
+
+    public void autonomousD() {
+    	
+    	I2CGyro gyro = new I2CGyro();
+    	gyro.Init();
+    	double degrees= 0.0;
+		SmartDashboard.putNumber("gyro degrees", degrees);
+
+		frontLeft.set(-.4);
+		backLeft.set(-.4);
+		backRight.set(-.4);			
+		frontRight.set(-.4);
+
+		do {
+    		degrees = gyro.getDegrees();
+    		SmartDashboard.putNumber("gyro degrees", degrees);
+    	} while (degrees < 360);
+
+		frontLeft.stopMotor();
+		backLeft.stopMotor();
+		backRight.stopMotor();
+		frontRight.stopMotor();
+    }
+
     /** 
      * Runs during test mode
      */

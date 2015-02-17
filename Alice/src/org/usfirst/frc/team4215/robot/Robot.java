@@ -47,7 +47,7 @@ public class Robot extends SampleRobot {
 	Talon frontRight = new Talon(3);
 
 	Talon elevator1 = new Talon(4);
-	Talon elevator2 = new Talon(5);
+//	Talon elevator2 = new Talon(5);
 	Talon rackPinion = new Talon(6);
 	
 	DigitalInput outerLimitSwitch = new DigitalInput(1);
@@ -55,16 +55,16 @@ public class Robot extends SampleRobot {
 	DigitalInput upperElevatorLimitSwitch = new DigitalInput(3);
 	DigitalInput lowerElevatorLimitSwitch = new DigitalInput(4);
 	
-	BuiltInAccelerometer accg = new BuiltInAccelerometer();
-	
+//	BuiltInAccelerometer accg = new BuiltInAccelerometer();
+
 	Timer time = new Timer();
 	
-	SinglePoint leftSensor = new SinglePoint(0 , 0 , 1);
-	SinglePoint rightSensor = new SinglePoint(1 , 0 , 1);
+//	SinglePoint leftSensor = new SinglePoint(0 , 0 , 1);
+//	SinglePoint rightSensor = new SinglePoint(1 , 0 , 1);
 	
 	Victor brake = new Victor(7);
 	
-	Ultrasonic ultrasonic = new Ultrasonic(0 , 1);		//TODO: ports?
+	Ultrasonic ultrasonic = new Ultrasonic(2, 1);		//TODO: ports?
 	
 	int count = 0;
 	
@@ -138,8 +138,8 @@ public class Robot extends SampleRobot {
     	else {
     		strafe = .5 * tankLeftStrafe;
     	}    	
-    	accmss = accg.getX()*9.81;
-    	speedms = accmss * .001;
+//    	accmss = accg.getX()*9.81;
+//    	speedms = accmss * .001;
     	frontLeft.set(-tankLeftDrive + strafe);
     	backLeft.set(-tankLeftDrive - strafe);
     	backRight.set(tankRightDrive - strafe);
@@ -184,7 +184,7 @@ public class Robot extends SampleRobot {
     	}
     	
     	elevator1.set(elevation);
-    	elevator2.set(elevation);
+//    	elevator2.set(elevation);
     }
 
 	private double joystickInputConditioning(double input, final double cautionInput, double minInput, double maxInput) {
@@ -269,47 +269,47 @@ public class Robot extends SampleRobot {
     	
     	rackPinion.set(arms);    	
     }
+    
     public void autoStrafe(){
-    	
-    	int counter = 0;
-    	
-    	frontLeft.setSafetyEnabled(false);
-    	frontRight.setSafetyEnabled(false);
-    	backLeft.setSafetyEnabled(false);
-    	backRight.setSafetyEnabled(false);
-    	
-        while (counter < 4) {
-        	frontRight.set(.5);
-        	backLeft.set(.5);
-        	frontLeft.set(-.5);
-        	backRight.set(-.5);
-        	
-        	leftSensor.scan();
-        	rightSensor.scan();
-        	
-        	if ( (leftSensor.scan() <= 50) && (leftSensor.scan() > 0) ) {
-        		counter = counter + 1;
-        	}
-        	else {
-        		
-        	}
-        	
-        	// if count is 3, slow down to half speed
-        	if (counter == 3) {
-        		frontRight.set(.25);
-            	backLeft.set(.25);
-            	frontLeft.set(-.25);
-            	backRight.set(-.25);
-        	}
-        }
-        
-        
-        frontRight.set(0);
-    	backLeft.set(0);
-    	frontLeft.set(0);
-    	backRight.set(0);
-    	
-    	counter = 0;
+//    	int counter = 0;
+//    	
+//    	frontLeft.setSafetyEnabled(false);
+//    	frontRight.setSafetyEnabled(false);
+//    	backLeft.setSafetyEnabled(false);
+//    	backRight.setSafetyEnabled(false);
+//    	
+//        while (counter < 4) {
+//        	frontRight.set(.5);
+//        	backLeft.set(.5);
+//        	frontLeft.set(-.5);
+//        	backRight.set(-.5);
+//        	
+//        	leftSensor.scan();
+//        	rightSensor.scan();
+//        	
+//        	if ( (leftSensor.scan() <= 50) && (leftSensor.scan() > 0) ) {
+//        		counter = counter + 1;
+//        	}
+//        	else {
+//        		
+//        	}
+//        	
+//        	// if count is 3, slow down to half speed
+//        	if (counter == 3) {
+//        		frontRight.set(.25);
+//            	backLeft.set(.25);
+//            	frontLeft.set(-.25);
+//            	backRight.set(-.25);
+//        	}
+//        }
+//        
+//        
+//        frontRight.set(0);
+//    	backLeft.set(0);
+//    	frontLeft.set(0);
+//    	backRight.set(0);
+//    	
+//    	counter = 0;
     }
     /**
      * Runs during test mode

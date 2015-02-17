@@ -11,9 +11,6 @@ public class Robot extends SampleRobot {
 	}
 	
 	// Objects defined for drive train.
-	Joystick LeftStick = new Joystick(0);
-	Joystick RightStick = new Joystick(1);
-	
 	Talon LeftFront = new Talon(0);
 	Talon RightFront = new Talon(1);
 	Talon LeftBack = new Talon(2);
@@ -41,9 +38,6 @@ public class Robot extends SampleRobot {
     public void DriveMethod() {
     	
     	// Tank Drive for teleop...
-    	
-    	
-
     		// LeftStick's y-axis controls the left half of the robot.
     		if (LeftStick.getY()>.8) {
     			tankLeft = 1;

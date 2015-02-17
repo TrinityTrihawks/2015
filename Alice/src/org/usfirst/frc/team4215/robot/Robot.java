@@ -5,6 +5,10 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Gyro;
+import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Talon;
@@ -79,22 +83,21 @@ public class Robot extends SampleRobot {
 	Talon backRight = new Talon(2);			
 	Talon frontRight = new Talon(3);
 	Talon elevator = new Talon(4);
+
+	Talon elevator1 = new Talon(4);
 	Talon rackPinion = new Talon(6);
 	Victor brake = new Victor(7);
 	
 	Ultrasonic rangefinder = new Ultrasonic(2,1);
 	
-	BuiltInAccelerometer accg = new BuiltInAccelerometer();
-	Timer time = new Timer();
+//	BuiltInAccelerometer accg = new BuiltInAccelerometer();
 
+	Timer time = new Timer();
+	
+	
+	Ultrasonic ultrasonic = new Ultrasonic(2, 1);		//TODO: ports?
+	
 	int count = 0;
-	
-	double accmss;
-	double speedms;
-	double hertz;
-	
-	final double autogo = 1.168;
-	final long wt = 100; 
 	
 	
 	double frontLeftDriveValue = 0.0;
@@ -111,32 +114,42 @@ public class Robot extends SampleRobot {
 	
 	double elevation;
 	double arms;
+	final double autogo = 116.8;
+	final long wt = 100; 
 	
+	private final double maxInputDriver = .75;
+    private final double minInputDriver = .15;
+	private final double maxInputElevation = 0.9;
+	private final double minInputElevation = 0.1;
+	private final double maxInputRack = 0.9;
+	private final double minInputRack = 0.1;
+	private final double cautionInput=-.05;
+
 	boolean brakeEngaged;
 	int brakeEngagedCount = 0;
 	
-
     /**
      * Drive left & right motors for 2 seconds then stop
      */
 	PowerDistributionPanel pdp = new PowerDistributionPanel();
 	AnalogInput test = new AnalogInput(0);
     public void autonomous() {
-        while (!isOperatorControl() && isEnabled()) {
-//        	autoStrafe();
-        	SmartDashboard.putNumber("Current 1",pdp.getCurrent(0));
-        	SmartDashboard.putNumber("Current 2",pdp.getCurrent(1));
-        	SmartDashboard.putNumber("Current 3",pdp.getCurrent(2));
-        	SmartDashboard.putNumber("Current 4",pdp.getCurrent(3));
-        	SmartDashboard.putData("Single Point",test);
-        }
+    	boolean autoComplete = false;
+        while (isAutonomous() && isEnabled() && !autoComplete) {
         	
+        	try {
+//        		autonomousA();
+        	}
+        	catch(Exception e) {
+        		SmartDashboard.putString("Exception", e.getMessage());
+        	}
+        	finally {
+        		autoComplete = true;
+        	}
+        }
     }
     
-    /**
-     * Runs the motors with arcade steering.
-     */
-    public void operatorControl() {
+    public void operatorControl(){
         
     	frontLeft.setSafetyEnabled(true);
     	frontRight.setSafetyEnabled(true);
@@ -163,9 +176,6 @@ public class Robot extends SampleRobot {
         	SmartDashboard.putNumber("Back Left Value",backLeftDriveValue);
         	SmartDashboard.putNumber("Back Right Value",backRightDriveValue);
         	SmartDashboard.putNumber("Elevator",elevatorDriveValue);
-        	SmartDashboard.putNumber("Accleration M/s^2", accmss);
-        	SmartDashboard.putNumber("Speed M/s", speedms);
-//            SmartDashboard.putData("Single Point",test);
         }
     }
     
@@ -175,16 +185,11 @@ public class Robot extends SampleRobot {
     	double tank2 = rightStick.getY();
     	double strafe = rightStick.getX();
     	
-    	accmss = accg.getX()*9.81;
-    	speedms = accmss * .001;
-    	
     	frontLeft.set(-tank + strafe);
     	backLeft.set(-tank - strafe);
     	backRight.set(tank2 - strafe);
     	frontRight.set(tank2 + strafe);
-    	
-    	
-    }
+    	    }
 
     public void Elevator() {
     	
@@ -194,8 +199,7 @@ public class Robot extends SampleRobot {
     	    	    	    	
     	elevatorDriveValue = elevation;
     	elevator.set(elevation);  
-    	
-    	}	
+    }	
            
     public void brakeMethod(){
     	 
@@ -222,8 +226,22 @@ public class Robot extends SampleRobot {
     	}		
     }
 
-    public void rackMethod(){ 	// Lauren&Margaret&Emma wrote this part
+    public void rackMethod() { 	// Lauren&Margaret&Emma wrote this part
    	
+		/*
+		float axis = stick.getRawAxis(axisNumber); //see table below for axis numbers
+		boolean button = stick.getRawButton(buttonNumber);
+		
+		Axis indexes:
+			1 - LeftX
+			2 - LeftY
+			3 - Triggers (Each trigger = 0 to 1, axis value = right - left)
+			4 - RightX
+			5 - RightY
+			6 - DPad Left/Right
+			(http://www.chiefdelphi.com/forums/showthread.php?threadid=82825)
+    	*/
+
     	arms = thirdStick.getX();  	   	
     	rackPinion.set(arms * RACKINPUTSCALE);   	
     }
@@ -254,92 +272,65 @@ public class Robot extends SampleRobot {
 		return input;
 	}    
     
-    public void rackMethodAlt(){ 	// Lauren&Margaret&Emma wrote this part
-    	
-//    	double arms = thirdStick.getRawAxis(4);
-//    	
-//		/*
-//		float axis = stick.getRawAxis(axisNumber); //see table below for axis numbers
-//		boolean button = stick.getRawButton(buttonNumber);
-//		
-//		Axis indexes:
-//			1 - LeftX
-//			2 - LeftY
-//			3 - Triggers (Each trigger = 0 to 1, axis value = right - left)
-//			4 - RightX
-//			5 - RightY
-//			6 - DPad Left/Right
-//			(http://www.chiefdelphi.com/forums/showthread.php?threadid=82825)
-//    	*/
-//   
-//    	arms = joystickInputConditioning(arms, cautionInput, minInputRack, maxInputRack);
-//    	
-//    	if (outerLimitSwitch.get() && arms > 0){
-//    		arms = 0;
-//    	}
-//    	else if (innerLimitSwitch.get() && arms < 0){
-//    		arms = 0;
-//    	}
-//    	
-//    	rackPinion.set(arms);    	
-    }
-
-
-//    public void autonomousGripTote() {    //TDJ wrote this
-//    	
-//    	while (!innerLimitSwitch.get()) {
-//        	rackPinion.set(.75);   		
-//    	}
-//    	rackPinion.set(0);
-//
-//    }
-//
-//    public void autoStrafe(){
-//    	
-//    	int counter = 0;
-//    	
-//    	frontLeft.setSafetyEnabled(false);
-//    	frontRight.setSafetyEnabled(false);
-//    	backLeft.setSafetyEnabled(false);
-//    	backRight.setSafetyEnabled(false);
-//    	
-//        while (counter < 4) {
-//        	frontRight.set(.5);
-//        	backLeft.set(.5);
-//        	frontLeft.set(-.5);
-//        	backRight.set(-.5);
-//        	
-//        	leftSensor.scan();
-//        	rightSensor.scan();
-//        	
-//        	if ( (leftSensor.scan() <= 50) && (leftSensor.scan() > 0) ) {
-//        		counter = counter + 1;
-//        	}
-//        	else {
-//        		
-//        	}
-//        	
-//        	// if count is 3, slow down to half speed
-//        	if (counter == 3) {
-//        		frontRight.set(.25);
-//            	backLeft.set(.25);
-//            	frontLeft.set(-.25);
-//            	backRight.set(-.25);
-//        	}
-//        }
-//        
-//        
-//        frontRight.set(0);
-//    	backLeft.set(0);
-//    	frontLeft.set(0);
-//    	backRight.set(0);
-//    	
-//    	counter = 0;
-//    }
 
     /**
      * Runs during test mode
-     */
+     */    
+//    public void autonomousA() {
+//    	RobotDrive myRobotDrive = new RobotDrive(0, 1, 2, 3);
+//    	Gyro gyro = new Gyro(0);
+//    	gyro.initGyro();
+//    	//TODO: gyro sampling rate
+//    	
+//    	// minimum input for rack to prevent the bin from slipping
+//    	rackPinion.set(-.02);
+//    	
+//    	// lift the bin
+//    	elevator1.set(.5);
+//    	Timer.delay(.5);
+//    	
+//    	// move foward to tote
+//    	while(ultrasonic.getRangeMM() < 500) {
+//    		myRobotDrive.mecanumDrive_Cartesian(.25, 0, 0, gyro.getAngle());
+//    	}
+//    	myRobotDrive.stopMotor();
+//    	
+//    	// lower bin onto the tote
+//    	elevator1.set(-.25);
+//    	Timer.delay(.8);
+//    	
+//    	// open arms
+//    	rackPinion.set(.25);
+//    	Timer.delay(.3);
+//    	rackPinion.stopMotor();
+//    	
+//    	// move arms down to the tote level
+//    	elevator1.set(-.5);
+//    	Timer.delay(.2);
+//    	elevator1.stopMotor();
+//    	
+//    	// close arms
+//    	rackPinion.set(.3);
+//    	Timer.delay(.25);
+//    	rackPinion.set(-.02);
+//    	
+//    	// lift the tote
+//    	elevator1.set(.4);
+//    	Timer.delay(.1);
+//    	elevator1.stopMotor();
+//    	
+//    	// rotate the robot
+//    	while (gyro.getAngle() < 90) {
+//    		myRobotDrive.mecanumDrive_Cartesian(0, 0, .25, gyro.getAngle());
+//    	}
+//    	myRobotDrive.stopMotor();
+//    	
+//    	// drive the robot forward into the auto zone
+//    	while(ultrasonic.getRangeMM() < 500) {
+//    		myRobotDrive.mecanumDrive_Cartesian(.25, 0, 0, gyro.getAngle());
+//    	}
+//    	myRobotDrive.stopMotor();    	
+//    }
     public void test() {
     }
 }

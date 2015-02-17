@@ -93,7 +93,7 @@ public class Robot extends SampleRobot {
     	brake.setSafetyEnabled(false);
     	
    	    // driveForward();
-       	toteStack();
+       	binSet();
         //backupPlan();
             
     }
@@ -193,220 +193,77 @@ public class Robot extends SampleRobot {
     	rackPinion.set(arms * .5);   	
     }
     
-    public void toteStack(){
-    	// lift tote works
-
-    	/*
+    public void binSet(){
+    	// lift bin
     	elevator.set(-1);
+    	Timer.delay(.5);
+    	elevator.set(0);
+    	
+    	// drive backward
+    	backLeft.set(-.65);
+    	backRight.set(.65);
+    	frontLeft.set(-.65);
+    	frontRight.set(.65);
     	Timer.delay(.75);
-    	elevator.set(0);    	
-    	Timer.delay(1);
-    	
-    	// strafe right works
-    	backLeft.set(-.75);
-    	backRight.set(-.75);
-    	frontLeft.set(.85);
-    	frontRight.set(.855);
-    	Timer.delay(.75);
     	backLeft.set(0);
     	backRight.set(0);
     	frontLeft.set(0);
     	frontRight.set(0);
-    	Timer.delay(.01);  	
-    	*/
-    	/*
-    	// drive backward works
-    	backLeft.set(-.25);
-    	backRight.set(.25);
-    	frontLeft.set(-.25);
-    	frontRight.set(.25);
-    	Timer.delay(.5);
-    	backLeft.set(-.5);
-    	backRight.set(.5);
-    	frontLeft.set(-.5);
-    	frontRight.set(.5);
-    	Timer.delay(.5);
-    	backLeft.set(-.75);
-    	backRight.set(.75);
-    	frontLeft.set(-.75);
-    	frontRight.set(.75);
-    	Timer.delay(.45);
-    	    	
-    	backLeft.set(0);
-    	backRight.set(0);
-    	frontLeft.set(0);
-    	frontRight.set(0);
-    	Timer.delay(1);
-    	
-    	*/
-    	
-    	
-    	
-    	// strafe left
-    	backLeft.set(1);
-    	backRight.set(1);
-    	frontLeft.set(-1);
-    	frontRight.set(-1);
-    	Timer.delay(1);
-    	backLeft.set(0);
-    	backRight.set(0);
-    	frontLeft.set(0);
-    	frontRight.set(0);
-    	Timer.delay(.01);
-    	
-    	/*
-    	// strafe off of bin
-    	backLeft.set(-.75);
-    	backRight.set(-.75);
-    	frontLeft.set(.85);
-    	frontRight.set(.85);
-    	Timer.delay(.2);
-    	backLeft.set(0);
-    	backRight.set(0);
-    	frontLeft.set(0);
-    	frontRight.set(0);
-    	Timer.delay(1);
-    	
-    	// drive forward to tote
-    	backLeft.set(.5);
-    	backRight.set(-.5);
-    	frontLeft.set(.5);
-    	frontRight.set(-.5);
-    	Timer.delay(.6);
-    	backLeft.set(0);
-    	backRight.set(0);
-    	frontLeft.set(0);
-    	frontRight.set(0);
-    	Timer.delay(1);
-    	*/
-    	
-    	/*
-    	
-    	// set tote down
-    	elevator.set(1);
-    	Timer.delay(.5);
-    	elevator.set(0);
-    	Timer.delay(1);
-    	
-    	// open claw
-    	rackPinion.set(-.3);
-    	Timer.delay(.25);
-    	rackPinion.set(0);
-    	Timer.delay(1);
-    	// elevator down
-    	elevator.set(1);
-    	Timer.delay(1);
-    	
-    	// close claw
-    	rackPinion.set(-.35);
-    	Timer.delay(.25);
-    	rackPinion.set(0);
-    	Timer.delay(1);
-    	
-    	
-    	
-    	/*
-    	// elevator up
-    	elevator.set(-1);
-    	Timer.delay(1.5);
-    	elevator.set(0);
-    	Timer.delay(1);
-    	// turn around
-    	frontLeft.set(-1);
-    	backLeft.set(-1);
-    	frontRight.set(-1);
-    	backRight.set(-1);
-    	Timer.delay(.75);
-    	frontLeft.set(0);
-    	backLeft.set(0);
-    	frontRight.set(0);
-    	backRight.set(0);
-    	Timer.delay(1);
-    	
-    	// drive forward
-    	frontLeft.set(1);
-    	backLeft.set(1);
-    	frontRight.set(-1);
-    	backRight.set(-1);
-    	Timer.delay(.5);
-    	frontLeft.set(0);
-    	backLeft.set(0);
-    	frontRight.set(0);
-    	backRight.set(0);
-    	Timer.delay(1);
-    	// set tote down
-    	elevator.set(1);
-    	Timer.delay(.5);
-    	elevator.set(0);
-    	Timer.delay(1);
-    	
-    	// open claw
-    	rackPinion.set(.3);
-    	Timer.delay(.25);
-    	rackPinion.set(0);
-    	Timer.delay(1);
-    	// elevator down
-    	elevator.set(1);
-    	Timer.delay(1);
-    	elevator.set(0);
-    	Timer.delay(1);
-    	// close claw
-    	rackPinion.set(-.35);
-    	Timer.delay(.25);
-    	rackPinion.set(0);
-    	Timer.delay(1);
-    	// elevator up
-    	elevator.set(-1);
-    	Timer.delay(.75);
-    	elevator.set(0);
-    	Timer.delay(1);
-    	// turn left
-    	frontLeft.set(-1);
-    	backLeft.set(-1);
-    	frontRight.set(-1);
-    	backRight.set(-1);
-    	Timer.delay(.5);
-    	frontLeft.set(0);
-    	backLeft.set(0);
-    	frontRight.set(0);
-    	backRight.set(0);
-    	Timer.delay(1);
-    	
-    	// drive forward
-    	frontLeft.set(1);
-    	backLeft.set(1);
-    	frontRight.set(-1);
-    	backRight.set(-1);
-    	Timer.delay(2);
-    	frontLeft.set(0);
-    	backLeft.set(0);
-    	frontRight.set(0);
-    	backRight.set(0);
     	
     	// lower elevator
     	elevator.set(1);
-    	Timer.delay(1.5);
+    	Timer.delay(.2);
     	elevator.set(0);
     	
     	// open claw
-    	rackPinion.set(.3);
-    	Timer.delay(.3);
+    	rackPinion.set(-.35);
+    	Timer.delay(.25);
     	rackPinion.set(0);
     	
-    	// back up
-    	frontLeft.set(-1);
-    	backLeft.set(-1);
-    	frontRight.set(1);
-    	backRight.set(1);
-    	Timer.delay(.25);
-    	frontLeft.set(0);
+    	// raise elevator
+    	elevator.set(-1);
+    	Timer.delay(.50);
+    	elevator.set(0);
+    	
+    	// strafe left
+    	backLeft.set(.65);
+    	backRight.set(.65);
+    	frontRight.set(-.75);
+    	frontLeft.set(-.75);
+    	Timer.delay(1);
     	backLeft.set(0);
+    	backRight.set(0);
     	frontRight.set(0);
-    	backRight.set(0);  	
+    	frontLeft.set(0);
+    	
+    	// lower elevator
+    	elevator.set(1);
+    	Timer.delay(.5);
+    	elevator.set(0);
+    	
+    	// drive forward
+    	backLeft.set(1);
+    	backRight.set(-1);
+    	frontRight.set(-1);
+    	frontLeft.set(1);
+    	Timer.delay(1.5);
+    	backLeft.set(0);
+    	backRight.set(0);
+    	frontRight.set(0);
+    	frontLeft.set(0);
+    	
+    	// shut claw
+    	rackPinion.set(.35);
+    	Timer.delay(.25);
+    	rackPinion.set(0);
+    	
+    	// raise elevator
     	
     	
     	
-    	*/
+    	
+    	
+    	
     }
     
    

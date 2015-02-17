@@ -214,8 +214,8 @@ public class Robot extends SampleRobot {
     	frontRight.set(0);
     	Timer.delay(.01);  	
     	*/
-    	
-    	// drive backward and use ultrasonic to stop
+    	/*
+    	// drive backward works
     	backLeft.set(-.25);
     	backRight.set(.25);
     	frontLeft.set(-.25);
@@ -230,7 +230,7 @@ public class Robot extends SampleRobot {
     	backRight.set(.75);
     	frontLeft.set(-.75);
     	frontRight.set(.75);
-    	Timer.delay(.25);
+    	Timer.delay(.45);
     	    	
     	backLeft.set(0);
     	backRight.set(0);
@@ -238,22 +238,23 @@ public class Robot extends SampleRobot {
     	frontRight.set(0);
     	Timer.delay(1);
     	
+    	*/
     	
-    	/*
     	
     	
     	// strafe left
-    	backLeft.set(.75);
-    	backRight.set(.75);
-    	frontLeft.set(-.95);
-    	frontRight.set(-.95);
-    	Timer.delay(.5);
+    	backLeft.set(1);
+    	backRight.set(1);
+    	frontLeft.set(-1);
+    	frontRight.set(-1);
+    	Timer.delay(1);
     	backLeft.set(0);
     	backRight.set(0);
     	frontLeft.set(0);
     	frontRight.set(0);
     	Timer.delay(.01);
     	
+    	/*
     	// strafe off of bin
     	backLeft.set(-.75);
     	backRight.set(-.75);
@@ -279,7 +280,7 @@ public class Robot extends SampleRobot {
     	Timer.delay(1);
     	*/
     	
-    	
+    	/*
     	
     	// set tote down
     	elevator.set(1);
@@ -408,97 +409,7 @@ public class Robot extends SampleRobot {
     	*/
     }
     
-    public void backupPlan(){
-    	
-    	
-    	// lift garbage can
-    	elevator.set(-1);
-    	Timer.delay(1);
-    	elevator.set(0);
-    	
-    	// drive forward
-    	frontLeft.set(.25);
-    	backLeft.set(.25);
-    	frontRight.set(-.25);
-    	backRight.set(-.25);
-    	Timer.delay(.8);
-    	frontLeft.set(0);
-    	backLeft.set(0);
-    	frontRight.set(0);
-    	backRight.set(0);
-     	
-    	
-    	// set GC down
-    	elevator.set(1);
-    	Timer.delay(.9);
-    	elevator.set(0);
-    	
-    	// open rack
-    	rackPinion.set(-.25);
-    	Timer.delay(.15);
-    	rackPinion.set(0);
-    	
-    	
-    	// lower elevator
-    	elevator.set(1);
-    	Timer.delay(.5);
-    	elevator.set(0);
-    	
-    	// close rack
-    	rackPinion.set(.25);
-    	Timer.delay(.15);
-    	rackPinion.set(0);
-    	
-    	// lift stack
-    	elevator.set(1);
-    	Timer.delay(.75);
-    	elevator.set(0);
-    	
-    	// turn left
-    	frontLeft.set(-.4);
-    	backLeft.set(-.4);
-    	frontRight.set(-.4);
-    	backRight.set(-.4);
-    	Timer.delay(1.0);
-    	frontLeft.set(0);
-    	backLeft.set(0);
-    	frontRight.set(0);
-    	backRight.set(0);
-    	Timer.delay(.01);
-
-    	// drive forward
-    	frontLeft.set(.25);
-    	backLeft.set(.25);
-    	frontRight.set(-.25);
-    	backRight.set(-.25);
-    	Timer.delay(6);
-    	frontLeft.set(0);
-    	backLeft.set(0);
-    	frontRight.set(0);
-    	backRight.set(0);
-    	
-    	elevator.set(-1);
-    	Timer.delay(.75);
-    	elevator.set(0);
-    	
-    	rackPinion.set(.35);
-    	Timer.delay(.25);
-    	rackPinion.set(0);
-    	
-    	frontLeft.set(-1);
-    	backLeft.set(-1);
-    	frontRight.set(-1);
-    	backRight.set(-1);
-    	Timer.delay(.5);
-    	frontLeft.set(0);
-    	backLeft.set(0);
-    	frontRight.set(0);
-    	backRight.set(0);
-    	
-    	
-    	
-    }
-    
+   
     public void driveForward(){
     	frontLeft.set(.75);
     	backLeft.set(.75);

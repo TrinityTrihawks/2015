@@ -41,6 +41,10 @@ public class Robot extends SampleRobot {
 	Talon backRight = new Talon(2);			
 	Talon frontRight = new Talon(3);
 	
+	Talon elevator1 = new Talon(4);
+	Talon rackPinion = new Talon(6);
+	Victor brake = new Victor(7);
+
 	Ultrasonic rangefinder = new Ultrasonic(2,1);
 	
 	Timer time = new Timer();
@@ -53,10 +57,6 @@ public class Robot extends SampleRobot {
 	
 	private final double maxInputDriver = 1.0;
     private final double minInputDriver = 0.0;
-    
-    Talon elevator1 = new Talon(4);
-    Talon rackPinion = new Talon(6);
-    Ultrasonic ultrasonic = new Ultrasonic(2, 1);
 		
     public void operatorControl() {   	
         while (isOperatorControl() && isEnabled()) {
@@ -106,7 +106,7 @@ public class Robot extends SampleRobot {
     public void autonomousB() {
     	double range = 0.0;
         do {
-        	rangefinder.getSmartDashboardType();
+//        	rangefinder.getSmartDashboardType();
         	double value = rangefinder.pidGet();
             range = (value / (5.0 / 512.0));                // The 5 is the voltage range, 512 is
     		frontLeft.set(.2);
@@ -183,8 +183,8 @@ public class Robot extends SampleRobot {
     	Timer.delay(.5);
     	
     	// move foward to tote
-    	frontLeft.set(.25);
-    	backLeft.set(.25);
+    	frontLeft.set(-.25);
+    	backLeft.set(-.25);
     	backRight.set(.25);
     	frontRight.set(.25);
     	Timer.delay(1);

@@ -76,20 +76,21 @@ public class Robot extends SampleRobot {
     }
 
     public void autonomousA() {
+    	
+    	AnalogUltrasonic rangefinder = new AnalogUltrasonic(2);
 //    	RobotDrive myRobotDrive = new RobotDrive(0, 1, 2, 3);
 //    	Gyro gyro = new Gyro(0);
 //    	gyro.initGyro();
     	//TODO: gyro sampling rate
     	    	
     	// move foward to tote
-    	while(rangefinder.getRangeMM() < 500) {
+    	while(rangefinder.GetRangeInCM() < 50) {
 //    		myRobotDrive.mecanumDrive_Cartesian(.25, 0, 0, gyro.getAngle());
     		frontLeft.set(.2);
     		backLeft.set(.2);
     		backRight.set(-.2);
     		frontRight.set(-.2);
-    		SmartDashboard.putNumber("rangeFinder dist", rangefinder.getRangeMM());
-    		SmartDashboard.putString("rangeFinder units", rangefinder.getDistanceUnits().toString());
+//    		SmartDashboard.putNumber("rangeFinder dist", rangefinder.GetRangeInCM());
     	}
 //    	myRobotDrive.stopMotor();
     	frontLeft.stopMotor();

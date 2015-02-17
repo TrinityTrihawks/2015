@@ -66,7 +66,9 @@ public class Robot extends SampleRobot {
 	double frontRightDriveValue = 0.0;
 	double backLeftDriveValue = 0.0;
 	double backRightDriveValue = 0.0;
-	double elevatorDriveValue = 0.5;
+	double elevatorDriveValue = 0.0;
+	
+	double RACKINPUTSCALE = .75;
 	
 	
 	PowerDistributionPanel pdp = new PowerDistributionPanel();
@@ -190,7 +192,7 @@ public class Robot extends SampleRobot {
     public void rackMethod(){ 	// Lauren&Margaret&Emma wrote this part
    	
     	arms = thirdStick.getX();  	   	
-    	rackPinion.set(arms * .5);   	
+    	rackPinion.set(arms * RACKINPUTSCALE);   	
     }
     
     public void binSet(){

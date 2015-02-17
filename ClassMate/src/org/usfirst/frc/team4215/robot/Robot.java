@@ -47,7 +47,7 @@ public class Robot extends SampleRobot {
 	Talon rackPinion = new Talon(6);
 	Victor brake = new Victor(7);
 	
-	//Ultrasonic rangefinder = new Ultrasonic(2,1);
+	Ultrasonic rangefinder = new Ultrasonic(2,1);
 	
 	BuiltInAccelerometer accg = new BuiltInAccelerometer();
 	Timer time = new Timer();
@@ -68,14 +68,6 @@ public class Robot extends SampleRobot {
 	double backRightDriveValue = 0.0;
 	double elevatorDriveValue = 0.5;
 	
-	DigitalInput outerLimitSwitch = new DigitalInput(5);
-	DigitalInput innerLimitSwitch = new DigitalInput(2);
-	DigitalInput upperElevatorLimitSwitch = new DigitalInput(3);
-	DigitalInput lowerElevatorLimitSwitch = new DigitalInput(4);
-	
-	
-	SinglePoint leftSensor = new SinglePoint(0, 0, 1);
-	//SinglePoint rightSensor = new SinglePoint(1, 0, 1);
 	
 	PowerDistributionPanel pdp = new PowerDistributionPanel();
 //	AnalogInput test = new AnalogInput(0);
@@ -86,13 +78,6 @@ public class Robot extends SampleRobot {
 	boolean brakeEngaged;
 	int brakeEngagedCount = 0;
 	
-	private final double maxInputDriver = 1.0;
-    private final double minInputDriver = 0.0;
-	private final double maxInputElevation = 1.0;
-	private final double minInputElevation = 0.0;
-	private final double maxInputRack = 1.0;
-	private final double minInputRack = 0.0;
-	private final double cautionInput = 0.0;
 		
     /**
      * Drive left & right motors for 2 seconds then stop
@@ -209,14 +194,15 @@ public class Robot extends SampleRobot {
     }
     
     public void toteStack(){
-    	// lift tote
+    	// lift tote works
+
     	/*
     	elevator.set(-1);
     	Timer.delay(.75);
-    	elevator.set(0);
-    	*/
-    	/*
-    	// strafe right
+    	elevator.set(0);    	
+    	Timer.delay(1);
+    	
+    	// strafe right works
     	backLeft.set(-.75);
     	backRight.set(-.75);
     	frontLeft.set(.85);
@@ -226,9 +212,8 @@ public class Robot extends SampleRobot {
     	backRight.set(0);
     	frontLeft.set(0);
     	frontRight.set(0);
-    	Timer.delay(.01);
+    	Timer.delay(.01);  	
     	*/
-    	
     	
     	// drive backward and use ultrasonic to stop
     	backLeft.set(-.25);
@@ -245,34 +230,24 @@ public class Robot extends SampleRobot {
     	backRight.set(.75);
     	frontLeft.set(-.75);
     	frontRight.set(.75);
-    	backLeft.set(-1);
-    	backRight.set(1);
-    	frontLeft.set(-1);
-    	frontRight.set(1);
-    	Timer.delay(.5);
-
-    	/*
-    	while(rangefinder.getRangeInches() > 20){
-    		backLeft.set(-1);
-        	backRight.set(1);
-        	frontLeft.set(-1);
-        	frontRight.set(1);
-    	}
-    	*/
-    	
+    	Timer.delay(.25);
+    	    	
     	backLeft.set(0);
     	backRight.set(0);
     	frontLeft.set(0);
     	frontRight.set(0);
-    	Timer.delay(.01);
+    	Timer.delay(1);
+    	
     	
     	/*
+    	
+    	
     	// strafe left
-    	backLeft.set(.375);
-    	backRight.set(.375);
-    	frontLeft.set(-.425);
-    	frontRight.set(-.425);
-    	Timer.delay(.75);
+    	backLeft.set(.75);
+    	backRight.set(.75);
+    	frontLeft.set(-.95);
+    	frontRight.set(-.95);
+    	Timer.delay(.5);
     	backLeft.set(0);
     	backRight.set(0);
     	frontLeft.set(0);
@@ -289,95 +264,101 @@ public class Robot extends SampleRobot {
     	backRight.set(0);
     	frontLeft.set(0);
     	frontRight.set(0);
-    	Timer.delay(.01);
+    	Timer.delay(1);
     	
     	// drive forward to tote
     	backLeft.set(.5);
     	backRight.set(-.5);
     	frontLeft.set(.5);
     	frontRight.set(-.5);
-    	Timer.delay(1);
+    	Timer.delay(.6);
     	backLeft.set(0);
     	backRight.set(0);
     	frontLeft.set(0);
     	frontRight.set(0);
-    	Timer.delay(.01);
+    	Timer.delay(1);
+    	*/
+    	
+    	
     	
     	// set tote down
     	elevator.set(1);
     	Timer.delay(.5);
     	elevator.set(0);
-    	Timer.delay(.01);
+    	Timer.delay(1);
     	
     	// open claw
-    	rackPinion.set(.3);
+    	rackPinion.set(-.3);
     	Timer.delay(.25);
     	rackPinion.set(0);
-    	
+    	Timer.delay(1);
     	// elevator down
     	elevator.set(1);
     	Timer.delay(1);
-    	elevator.set(-1);
     	
     	// close claw
     	rackPinion.set(-.35);
     	Timer.delay(.25);
     	rackPinion.set(0);
+    	Timer.delay(1);
     	
+    	
+    	
+    	/*
     	// elevator up
     	elevator.set(-1);
     	Timer.delay(1.5);
     	elevator.set(0);
-    	
+    	Timer.delay(1);
     	// turn around
     	frontLeft.set(-1);
     	backLeft.set(-1);
     	frontRight.set(-1);
     	backRight.set(-1);
-    	Timer.delay(.5);
+    	Timer.delay(.75);
     	frontLeft.set(0);
     	backLeft.set(0);
     	frontRight.set(0);
     	backRight.set(0);
-    	Timer.delay(.01);
+    	Timer.delay(1);
     	
     	// drive forward
     	frontLeft.set(1);
     	backLeft.set(1);
     	frontRight.set(-1);
     	backRight.set(-1);
-    	Timer.delay(1);
+    	Timer.delay(.5);
     	frontLeft.set(0);
     	backLeft.set(0);
     	frontRight.set(0);
     	backRight.set(0);
-    	
+    	Timer.delay(1);
     	// set tote down
     	elevator.set(1);
     	Timer.delay(.5);
     	elevator.set(0);
-    	Timer.delay(.01);
+    	Timer.delay(1);
     	
     	// open claw
     	rackPinion.set(.3);
     	Timer.delay(.25);
     	rackPinion.set(0);
-    	
+    	Timer.delay(1);
     	// elevator down
     	elevator.set(1);
     	Timer.delay(1);
     	elevator.set(0);
-    	
+    	Timer.delay(1);
     	// close claw
     	rackPinion.set(-.35);
     	Timer.delay(.25);
     	rackPinion.set(0);
-    	
+    	Timer.delay(1);
     	// elevator up
     	elevator.set(-1);
     	Timer.delay(.75);
     	elevator.set(0);
-    	
+    	Timer.delay(1);
     	// turn left
     	frontLeft.set(-1);
     	backLeft.set(-1);
@@ -388,7 +369,7 @@ public class Robot extends SampleRobot {
     	backLeft.set(0);
     	frontRight.set(0);
     	backRight.set(0);
-    	Timer.delay(.01);
+    	Timer.delay(1);
     	
     	// drive forward
     	frontLeft.set(1);
@@ -421,6 +402,9 @@ public class Robot extends SampleRobot {
     	backLeft.set(0);
     	frontRight.set(0);
     	backRight.set(0);  	
+    	
+    	
+    	
     	*/
     }
     

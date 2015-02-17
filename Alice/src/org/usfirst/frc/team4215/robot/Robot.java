@@ -2,12 +2,14 @@ package org.usfirst.frc.team4215.robot;
 
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -33,39 +35,85 @@ public class Robot extends SampleRobot {
 		
 	}
 	   
+//	// Objects defined for drive train.
+//	Joystick leftStick = new Joystick(0);
+//	Joystick rightStick = new Joystick(1);
+//	Joystick thirdStick = new Joystick(2);
+//		
+//	// Talon definition.
+//	Talon frontLeft = new Talon(0);
+//	Talon backLeft = new Talon(1);
+//	Talon backRight = new Talon(2);
+//	Talon frontRight = new Talon(3);
+//
+//	Talon elevator1 = new Talon(4);
+//	Talon elevator2 = new Talon(5);
+//	Talon rackPinion = new Talon(6);
+//	
+//	DigitalInput outerLimitSwitch = new DigitalInput(1);
+//	DigitalInput innerLimitSwitch = new DigitalInput(2);
+//	DigitalInput upperElevatorLimitSwitch = new DigitalInput(3);
+//	DigitalInput lowerElevatorLimitSwitch = new DigitalInput(4);
+//	
+//	SinglePoint leftSensor = new SinglePoint(0 , 0 , 1);
+//	SinglePoint rightSensor = new SinglePoint(1 , 0 , 1);
+//
+//	Victor brake = new Victor(7);
+//		
+//	private final double maxInputDriver = .75;
+//    private final double minInputDriver = .15;
+//	private final double maxInputElevation = 0.9;
+//	private final double minInputElevation = 0.1;
+//	private final double maxInputRack = 0.9;
+//	private final double minInputRack = 0.1;
+//	private final double cautionInput=-.05;
+	
 	// Objects defined for drive train.
 	Joystick leftStick = new Joystick(0);
 	Joystick rightStick = new Joystick(1);
 	Joystick thirdStick = new Joystick(2);
-		
-	// Talon definition.
+	
+	// Talon def
 	Talon frontLeft = new Talon(0);
 	Talon backLeft = new Talon(1);
-	Talon backRight = new Talon(2);
+	Talon backRight = new Talon(2);			
 	Talon frontRight = new Talon(3);
-
-	Talon elevator1 = new Talon(4);
-	Talon elevator2 = new Talon(5);
+	Talon elevator = new Talon(4);
 	Talon rackPinion = new Talon(6);
-	
-	DigitalInput outerLimitSwitch = new DigitalInput(1);
-	DigitalInput innerLimitSwitch = new DigitalInput(2);
-	DigitalInput upperElevatorLimitSwitch = new DigitalInput(3);
-	DigitalInput lowerElevatorLimitSwitch = new DigitalInput(4);
-	
-	SinglePoint leftSensor = new SinglePoint(0 , 0 , 1);
-	SinglePoint rightSensor = new SinglePoint(1 , 0 , 1);
-
 	Victor brake = new Victor(7);
-		
-	private final double maxInputDriver = .75;
-    private final double minInputDriver = .15;
-	private final double maxInputElevation = 0.9;
-	private final double minInputElevation = 0.1;
-	private final double maxInputRack = 0.9;
-	private final double minInputRack = 0.1;
-	private final double cautionInput=-.05;
 	
+	Ultrasonic rangefinder = new Ultrasonic(2,1);
+	
+	BuiltInAccelerometer accg = new BuiltInAccelerometer();
+	Timer time = new Timer();
+
+	int count = 0;
+	
+	double accmss;
+	double speedms;
+	double hertz;
+	
+	final double autogo = 1.168;
+	final long wt = 100; 
+	
+	
+	double frontLeftDriveValue = 0.0;
+	double frontRightDriveValue = 0.0;
+	double backLeftDriveValue = 0.0;
+	double backRightDriveValue = 0.0;
+	double elevatorDriveValue = 0.0;
+	
+	double RACKINPUTSCALE = .75;
+	
+	
+//	PowerDistributionPanel pdp = new PowerDistributionPanel();
+//	AnalogInput test = new AnalogInput(0);
+	
+	double elevation;
+	double arms;
+	
+	boolean brakeEngaged;
+	int brakeEngagedCount = 0;
 	
 
     /**
@@ -75,7 +123,7 @@ public class Robot extends SampleRobot {
 	AnalogInput test = new AnalogInput(0);
     public void autonomous() {
         while (!isOperatorControl() && isEnabled()) {
-        	autoStrafe();
+//        	autoStrafe();
         	SmartDashboard.putNumber("Current 1",pdp.getCurrent(0));
         	SmartDashboard.putNumber("Current 2",pdp.getCurrent(1));
         	SmartDashboard.putNumber("Current 3",pdp.getCurrent(2));
@@ -208,86 +256,87 @@ public class Robot extends SampleRobot {
     
     public void rackMethodAlt(){ 	// Lauren&Margaret&Emma wrote this part
     	
-    	double arms = thirdStick.getRawAxis(4);
-    	
-		/*
-		float axis = stick.getRawAxis(axisNumber); //see table below for axis numbers
-		boolean button = stick.getRawButton(buttonNumber);
-		
-		Axis indexes:
-			1 - LeftX
-			2 - LeftY
-			3 - Triggers (Each trigger = 0 to 1, axis value = right - left)
-			4 - RightX
-			5 - RightY
-			6 - DPad Left/Right
-			(http://www.chiefdelphi.com/forums/showthread.php?threadid=82825)
-    	*/
-   
-    	arms = joystickInputConditioning(arms, cautionInput, minInputRack, maxInputRack);
-    	
-    	if (outerLimitSwitch.get() && arms > 0){
-    		arms = 0;
-    	}
-    	else if (innerLimitSwitch.get() && arms < 0){
-    		arms = 0;
-    	}
-    	
-    	rackPinion.set(arms);    	
+//    	double arms = thirdStick.getRawAxis(4);
+//    	
+//		/*
+//		float axis = stick.getRawAxis(axisNumber); //see table below for axis numbers
+//		boolean button = stick.getRawButton(buttonNumber);
+//		
+//		Axis indexes:
+//			1 - LeftX
+//			2 - LeftY
+//			3 - Triggers (Each trigger = 0 to 1, axis value = right - left)
+//			4 - RightX
+//			5 - RightY
+//			6 - DPad Left/Right
+//			(http://www.chiefdelphi.com/forums/showthread.php?threadid=82825)
+//    	*/
+//   
+//    	arms = joystickInputConditioning(arms, cautionInput, minInputRack, maxInputRack);
+//    	
+//    	if (outerLimitSwitch.get() && arms > 0){
+//    		arms = 0;
+//    	}
+//    	else if (innerLimitSwitch.get() && arms < 0){
+//    		arms = 0;
+//    	}
+//    	
+//    	rackPinion.set(arms);    	
     }
 
 
-    public void autonomousGripTote() {    //TDJ wrote this
-    	
-    	while (!innerLimitSwitch.get()) {
-        	rackPinion.set(.75);   		
-    	}
-    	rackPinion.set(0);
+//    public void autonomousGripTote() {    //TDJ wrote this
+//    	
+//    	while (!innerLimitSwitch.get()) {
+//        	rackPinion.set(.75);   		
+//    	}
+//    	rackPinion.set(0);
+//
+//    }
+//
+//    public void autoStrafe(){
+//    	
+//    	int counter = 0;
+//    	
+//    	frontLeft.setSafetyEnabled(false);
+//    	frontRight.setSafetyEnabled(false);
+//    	backLeft.setSafetyEnabled(false);
+//    	backRight.setSafetyEnabled(false);
+//    	
+//        while (counter < 4) {
+//        	frontRight.set(.5);
+//        	backLeft.set(.5);
+//        	frontLeft.set(-.5);
+//        	backRight.set(-.5);
+//        	
+//        	leftSensor.scan();
+//        	rightSensor.scan();
+//        	
+//        	if ( (leftSensor.scan() <= 50) && (leftSensor.scan() > 0) ) {
+//        		counter = counter + 1;
+//        	}
+//        	else {
+//        		
+//        	}
+//        	
+//        	// if count is 3, slow down to half speed
+//        	if (counter == 3) {
+//        		frontRight.set(.25);
+//            	backLeft.set(.25);
+//            	frontLeft.set(-.25);
+//            	backRight.set(-.25);
+//        	}
+//        }
+//        
+//        
+//        frontRight.set(0);
+//    	backLeft.set(0);
+//    	frontLeft.set(0);
+//    	backRight.set(0);
+//    	
+//    	counter = 0;
+//    }
 
-    }
-
-    public void autoStrafe(){
-    	
-    	int counter = 0;
-    	
-    	frontLeft.setSafetyEnabled(false);
-    	frontRight.setSafetyEnabled(false);
-    	backLeft.setSafetyEnabled(false);
-    	backRight.setSafetyEnabled(false);
-    	
-        while (counter < 4) {
-        	frontRight.set(.5);
-        	backLeft.set(.5);
-        	frontLeft.set(-.5);
-        	backRight.set(-.5);
-        	
-        	leftSensor.scan();
-        	rightSensor.scan();
-        	
-        	if ( (leftSensor.scan() <= 50) && (leftSensor.scan() > 0) ) {
-        		counter = counter + 1;
-        	}
-        	else {
-        		
-        	}
-        	
-        	// if count is 3, slow down to half speed
-        	if (counter == 3) {
-        		frontRight.set(.25);
-            	backLeft.set(.25);
-            	frontLeft.set(-.25);
-            	backRight.set(-.25);
-        	}
-        }
-        
-        
-        frontRight.set(0);
-    	backLeft.set(0);
-    	frontLeft.set(0);
-    	backRight.set(0);
-    	
-    	counter = 0;
-    }
     /**
      * Runs during test mode
      */

@@ -90,83 +90,97 @@ public class Robot extends SampleRobot {
      */
     public void operatorControl() {
         
+    	frontLeft.setSafetyEnabled(true);
+    	frontRight.setSafetyEnabled(true);
+    	backRight.setSafetyEnabled(true);
+    	backLeft.setSafetyEnabled(true);
+    	elevator.setSafetyEnabled(true);
+    	rackPinion.setSafetyEnabled(true);
+    	brake.setSafetyEnabled(true);
+    	
+    	
+    	brakeEngaged = true;
+    	
         while (isOperatorControl() && isEnabled()) {
-//        	SmartDashboard
             drivingMethod();
+            Elevator();
+            rackMethod();
+            brakeMethod();
+            SmartDashboard.putNumber("Current 1",pdp.getCurrent(0));
+            SmartDashboard.putNumber("Current 2",pdp.getCurrent(1));
+            SmartDashboard.putNumber("Current 3",pdp.getCurrent(2));
+            SmartDashboard.putNumber("Current 4",pdp.getCurrent(3));
+        	SmartDashboard.putNumber("Front Left Value",frontLeftDriveValue);
+        	SmartDashboard.putNumber("Front Right Value",frontRightDriveValue);
+        	SmartDashboard.putNumber("Back Left Value",backLeftDriveValue);
+        	SmartDashboard.putNumber("Back Right Value",backRightDriveValue);
+        	SmartDashboard.putNumber("Elevator",elevatorDriveValue);
+        	SmartDashboard.putNumber("Accleration M/s^2", accmss);
+        	SmartDashboard.putNumber("Speed M/s", speedms);
+//            SmartDashboard.putData("Single Point",test);
         }
     }
     
     public void drivingMethod(){
     	
-    	double tankLeftDrive = leftStick.getY();
-    	double tankRightDrive = rightStick.getY();
+    	double tank = leftStick.getY();
+    	double tank2 = rightStick.getY();
+    	double strafe = rightStick.getX();
     	
-    	double tankLeftStrafe = leftStick.getX();
-    	double tankRightStrafe = rightStick.getX();
-
-    	double strafe = 0.0;
-
-    	tankLeftDrive = joystickInputConditioning(tankLeftDrive, cautionInput, minInputDriver, maxInputDriver);
-    	tankRightDrive = joystickInputConditioning(tankRightDrive, cautionInput, minInputDriver, maxInputDriver);
+    	accmss = accg.getX()*9.81;
+    	speedms = accmss * .001;
     	
-    	tankLeftStrafe = joystickInputConditioning(tankLeftStrafe, cautionInput, minInputDriver, maxInputDriver);
-    	tankRightStrafe = joystickInputConditioning(tankRightStrafe, cautionInput, minInputDriver, maxInputDriver);
-
-    	if (tankRightStrafe >= minInputDriver) {			// This line gives the right joystick strafing priority if both joysticks are moved in the x-direction.
-    		strafe = tankRightStrafe;
-    	}
-    	else {
-    		strafe = .5 * tankLeftStrafe;
-    	}    	
+    	frontLeft.set(-tank + strafe);
+    	backLeft.set(-tank - strafe);
+    	backRight.set(tank2 - strafe);
+    	frontRight.set(tank2 + strafe);
     	
-    	frontLeft.set(-tankLeftDrive + strafe);
-    	backLeft.set(-tankLeftDrive - strafe);
-    	backRight.set(tankRightDrive - strafe);
-    	frontRight.set(tankRightDrive + strafe);
+    	
     }
 
     public void Elevator() {
     	
-		double elevation = thirdStick.getRawAxis(2);
-		
-		/*
-		float axis = stick.getRawAxis(axisNumber); //see table below for axis numbers
-		boolean button = stick.getRawButton(buttonNumber);
-		
-		Axis indexes:
-			1 - LeftX
-			2 - LeftY
-			3 - Triggers (Each trigger = 0 to 1, axis value = right - left)
-			4 - RightX
-			5 - RightY
-			6 - DPad Left/Right
-			(http://www.chiefdelphi.com/forums/showthread.php?threadid=82825)
-    	*/
-    	elevation = joystickInputConditioning(elevation, cautionInput, minInputElevation, maxInputElevation);
-    	    	
-    	if (upperElevatorLimitSwitch.get() && elevation > 0){
-    		elevation = 0;
-    	}
-    	else if (lowerElevatorLimitSwitch.get() && elevation < 0){
-    		elevation = 0;
-    	}
+    	double elevation;
 
-    	if (elevation==0) {
-
-    		brake.setSafetyEnabled(true);
-    	}
-    	else {
-    		brake.setSafetyEnabled(false);
-    		brake.set(1);
-    		Timer.delay(.25);
-    		brake.setSafetyEnabled(true);
-    	}
+    	elevation = thirdStick.getRawAxis(2);
+    	    	    	    	
+    	elevatorDriveValue = elevation;
+    	elevator.set(elevation);  
     	
-    	elevator1.set(elevation);
-    	elevator2.set(elevation);
+    	}	
+           
+    public void brakeMethod(){
+    	 
+		if(thirdStick.getRawButton(5)) {
+			if (brakeEngagedCount >= 10 ) {
+				brake.setSafetyEnabled(false);
+				if (brakeEngaged == true) {
+		    		brake.set(.5);
+		    		Timer.delay(.1);
+		    		brakeEngaged = false;
+				}
+				else {
+			    		brake.set(-.75);
+			    		Timer.delay(.1);
+			    		brakeEngaged = true;
+				}
+				//Timer.delay(.1);
+				brake.set(.0);
+				brake.setSafetyEnabled(true);
+				brakeEngagedCount = 0;
+			} else {
+				brakeEngagedCount++;
+			}
+    	}		
     }
 
-	private double joystickInputConditioning(double input, final double cautionInput, double minInput, double maxInput) {
+    public void rackMethod(){ 	// Lauren&Margaret&Emma wrote this part
+   	
+    	arms = thirdStick.getX();  	   	
+    	rackPinion.set(arms * RACKINPUTSCALE);   	
+    }
+
+    private double joystickInputConditioning(double input, final double cautionInput, double minInput, double maxInput) {
 
 		if (Math.abs(input) >= maxInput) {
     		if (input >= maxInput){
@@ -192,9 +206,7 @@ public class Robot extends SampleRobot {
 		return input;
 	}    
     
-
-
-    public void rackMethod(){ 	// Lauren&Margaret&Emma wrote this part
+    public void rackMethodAlt(){ 	// Lauren&Margaret&Emma wrote this part
     	
     	double arms = thirdStick.getRawAxis(4);
     	
@@ -223,6 +235,7 @@ public class Robot extends SampleRobot {
     	
     	rackPinion.set(arms);    	
     }
+
 
     public void autonomousGripTote() {    //TDJ wrote this
     	

@@ -68,7 +68,7 @@ public class Robot extends SampleRobot {
     	boolean autoComplete = false;
         while (isAutonomous() && isEnabled() && !autoComplete) {	
         	try {
-        		autonomousB();
+        		AutonomousBinToteLift();
         	}
         	catch(Exception e) {
         		SmartDashboard.putString("Exception", e.getMessage());
@@ -79,6 +79,92 @@ public class Robot extends SampleRobot {
         }
     }
 
+    public void AutonomousSetSafetyAllMotors(boolean flag)
+    {
+    	frontLeft.setSafetyEnabled(flag);
+    	frontRight.setSafetyEnabled(flag);
+    	backLeft.setSafetyEnabled(flag);
+    	backRight.setSafetyEnabled(flag);
+    	elevator1.setSafetyEnabled(flag);
+    	rackPinion.setSafetyEnabled(flag);    	
+    }
+    
+    public void AutonomousStopDriveTrain() {
+		frontLeft.stopMotor();
+    	backLeft.stopMotor();
+    	backRight.stopMotor();
+    	frontRight.stopMotor();   	
+    }
+    
+    public void AutonomousBinToteLift() {
+    	AnalogUltrasonic rangefinder = new AnalogUltrasonic(2);
+    	
+    	AutonomousSetSafetyAllMotors(false);
+    	
+    	//minimum input for rack to prevent the bin from slipping
+    	rackPinion.set(-.02);
+    	
+    	// lift the bin
+    	elevator1.set(-.75);
+    	Timer.delay(1.25);
+    	elevator1.stopMotor();
+    	
+//    	double delta = 0;
+//
+//    	// move the robot forward
+//    	while(rangefinder.GetRangeInCM() < (delta + 45)) {
+//    		frontLeft.set(.25);
+//        	backLeft.set(.25);
+//        	backRight.set(-.25);
+//        	frontRight.set(-.25);
+//    	}
+//    	
+//    	AutonomousStopDriveTrain();
+//    	   	
+//    	// open arms
+//    	rackPinion.set(-.25);
+//    	Timer.delay(.1);
+//    	rackPinion.set(0);
+//    	
+//    	// move arms down to the tote level
+//    	elevator1.set(.8);
+//    	Timer.delay(.5);
+//    	elevator1.stopMotor();
+//    	
+//    	// close arms
+//    	rackPinion.set(.25);
+//    	Timer.delay(.3);
+//    	rackPinion.set(-.02);
+//    	
+//    	// lift tote
+//    	elevator1.set(-.8);
+//    	Timer.delay(.5);
+//    	elevator1.stopMotor();
+//    	
+//    	// rotate robot
+//    	frontLeft.set(-.25);
+//    	backLeft.set(-.25);
+//    	backRight.set(-.25);
+//    	frontRight.set(-.25);
+//    	Timer.delay(1);
+//    	
+//    	frontLeft.set(0);
+//    	backLeft.set(0);
+//    	backRight.set(0);
+//    	frontRight.set(0);
+//    	
+//    	// move into the auto zone
+//    	while(rangefinder.GetRangeInCM() < (delta + 400)) {
+//    		frontLeft.set(.25);
+//        	backLeft.set(.25);
+//        	backRight.set(-.25);
+//        	frontRight.set(-.25);
+//    	}
+//    	AutonomousStopDriveTrain();
+    	
+    	AutonomousSetSafetyAllMotors(true);
+    }
+    
     public void autonomousA() {
     	
     	AnalogUltrasonic rangefinder = new AnalogUltrasonic(2);
@@ -89,12 +175,12 @@ public class Robot extends SampleRobot {
     	    	
     	// move foward to tote
     	while(rangefinder.GetRangeInCM() < 50) {
-//    		myRobotDrive.mecanumDrive_Cartesian(.25, 0, 0, gyro.getAngle());
-    		frontLeft.set(.2);
-    		backLeft.set(.2);
-    		backRight.set(-.2);
-    		frontRight.set(-.2);
-//    		SmartDashboard.putNumber("rangeFinder dist", rangefinder.GetRangeInCM());
+//    		frontLeft.set(.2);
+//    		backLeft.set(.2);
+//    		backRight.set(-.2);
+//    		frontRight.set(-.2);
+    		SmartDashboard.putNumber("rangeFinder dist", rangefinder.GetRangeInCM());
+    		SmartDashboard.putNumber("rangeFinder voltage", rangefinder.GetVoltage());
     	}
 //    	myRobotDrive.stopMotor();
     	frontLeft.stopMotor();

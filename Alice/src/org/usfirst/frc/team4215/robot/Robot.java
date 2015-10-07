@@ -249,7 +249,7 @@ public class Robot extends SampleRobot {
     	*/
 
     	arms = thirdStick.getX();  	
-    	rackValue = arms;
+    	rackValue = arms *.8;
     	rackPinion.set(rackValue);   
     	
     }

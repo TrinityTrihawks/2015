@@ -199,7 +199,7 @@ public class Robot extends SampleRobot {
     	
     	Double elevation;
     	
-    	elevation = thirdStick.getRawAxis(1);
+    	elevation = thirdStick.getRawAxis(0);
     	elevator.set(elevation);
     }	
            
@@ -244,9 +244,12 @@ public class Robot extends SampleRobot {
 			(http://www.chiefdelphi.com/forums/showthread.php?threadid=82825)
     	*/
 
-    	arms = thirdStick.getX();  	
-    	rackValue = arms *.8;
-    	rackPinion.set(rackValue);   
+    	if(thirdStick.getRawButton(0) && !(thirdStick.getRawButton(3))){
+    		rackPinion.set(.5);
+    	}
+    	else if(!(thirdStick.getRawButton(3)) && thirdStick.getRawButton(3)){
+    		rackPinion.set(-.5);
+    	}
     	
     }
 

@@ -200,10 +200,10 @@ public class Robot extends SampleRobot {
     	Boolean elevation;
 
     	if (thirdStick.getRawButton(1) && !(thirdStick.getRawButton(3))){
-    		elevator.set(.2);
+    		elevator.set(.5);
     	}
     	else if(!(thirdStick.getRawButton(1)) && (thirdStick.getRawButton(3))){
-    		elevator.set(-.2);
+    		elevator.set(-.5);
     	}
     }	
            

@@ -197,14 +197,10 @@ public class Robot extends SampleRobot {
 
     public void Elevator() {
     	
-    	Boolean elevation;
-
-    	if (thirdStick.getRawButton(1) && !(thirdStick.getRawButton(3))){
-    		elevator.set(-.5);
-    	}
-    	else if(!(thirdStick.getRawButton(1)) && (thirdStick.getRawButton(3))){
-    		elevator.set(.5);
-    	}
+    	Double elevation;
+    	
+    	elevation = thirdStick.getRawAxis(1);
+    	elevator.set(elevation);
     }	
            
     public void brakeMethod(){

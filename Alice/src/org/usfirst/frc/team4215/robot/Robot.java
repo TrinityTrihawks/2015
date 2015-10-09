@@ -199,7 +199,7 @@ public class Robot extends SampleRobot {
     	
     	Double elevation;
     	
-    	elevation = thirdStick.getRawAxis(0);
+    	elevation = thirdStick.getY();
     	
     	elevator.set(elevation);
     }	

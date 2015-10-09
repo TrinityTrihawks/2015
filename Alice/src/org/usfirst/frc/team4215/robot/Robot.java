@@ -245,10 +245,10 @@ public class Robot extends SampleRobot {
 			(http://www.chiefdelphi.com/forums/showthread.php?threadid=82825)
     	*/
 
-    	if(thirdStick.getRawButton(0) && !(thirdStick.getRawButton(3))){
+    	if(thirdStick.getRawButton(1) && !(thirdStick.getRawButton(4))){
     		rackPinion.set(.5);
     	}
-    	else if(!(thirdStick.getRawButton(0)) && thirdStick.getRawButton(3)){
+    	else if(!(thirdStick.getRawButton(1)) && thirdStick.getRawButton(4)){
     		rackPinion.set(-.5);
     	}
     	

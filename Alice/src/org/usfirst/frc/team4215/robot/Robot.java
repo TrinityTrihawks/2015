@@ -197,12 +197,11 @@ public class Robot extends SampleRobot {
 
     public void Elevator() {
     	
-    	double elevation;
-
-    	elevation = thirdStick.getRawAxis(2);
-    	    	    	    	
-    	elevatorDriveValue = elevation;
-    	elevator.set(elevation);  
+    	Double elevation;
+    	
+    	elevation = thirdStick.getY();
+    	
+    	elevator.set(elevation);
     }	
            
     public void brakeMethod(){
@@ -246,9 +245,12 @@ public class Robot extends SampleRobot {
 			(http://www.chiefdelphi.com/forums/showthread.php?threadid=82825)
     	*/
 
-    	arms = thirdStick.getX();  	
-    	rackValue = arms;
-    	rackPinion.set(rackValue);   
+    	if(thirdStick.getRawButton(2) && !(thirdStick.getRawButton(3))){
+    		rackPinion.set(.75);
+    	}
+    	else if(!(thirdStick.getRawButton(2)) && thirdStick.getRawButton(3)){
+    		rackPinion.set(-.75);
+    	}
     	
     }
 

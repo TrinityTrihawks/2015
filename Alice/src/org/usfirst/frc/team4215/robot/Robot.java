@@ -132,7 +132,7 @@ public class Robot extends SampleRobot {
 	public void autonomous() {
     	
 	
-		AutonomousBinToteLift();
+		//AutonomousBinToteLift();
 		
 		
 		boolean autoComplete = false;

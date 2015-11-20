@@ -111,6 +111,8 @@ public class Robot extends SampleRobot {
 	double arms;
 	final double autogo = 116.8;
 	final long wt = 100; 
+	final double autoDriveDelay = 5;
+	final double autoElevateDelay = 10;
 	
 	private final double maxInputDriver = .75;
     private final double minInputDriver = .15;
@@ -136,20 +138,11 @@ public class Robot extends SampleRobot {
 		
 		
 		boolean autoComplete = false;
-        while (isAutonomous() && isEnabled()) {
-    		//autonomousTimeBased();
-        	//binSet();
-
-/*        	try {
-//        		autonomousA();
-        	}
-        	catch(Exception e) {
-        		SmartDashboard.putString("Exception", e.getMessage());
-        	}
-        	finally {
-        		autoComplete = true;
-        	}
-*/        }
+        while(isAutonomous() && isEnabled()){
+        	auto();
+        }
+    		
+       
     }
     
     public void operatorControl(){
@@ -194,10 +187,30 @@ public class Robot extends SampleRobot {
     	backRight.set(tank2 - strafe);
     	frontRight.set(tank2 + strafe);
     	    }
-
+    
+    public void auto(){
+    	frontLeft.set(.3);
+    	backLeft.set(.3);
+    	backRight.set(.3);
+    	frontRight.set(.3);
+    	Timer.delay(autoDriveDelay);
+    	frontLeft.set(0);
+    	backLeft.set(0);
+    	backRight.set(0);
+    	frontRight.set(0);
+    	
+     	rackPinion.set(.5);
+    	Timer.delay(1);
+    	rackPinion.set(.5);
+    	
+    	elevator.set(.5);
+    	Timer.delay(autoElevateDelay);
+    	elevator.set(0);
+    }
+    
     public void Elevator() {
     	
-    	Double elevation;
+    	double elevation;
     	
     	elevation = thirdStick.getY();
     	

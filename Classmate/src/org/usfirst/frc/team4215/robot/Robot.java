@@ -55,7 +55,7 @@ public class Robot extends SampleRobot {
     }
 
     /**
-     * Runs during test mode
+     * Runs during test moody
      */
     public void test() {
     }
